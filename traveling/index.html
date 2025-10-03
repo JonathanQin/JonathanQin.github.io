@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Traveling | My Website</title>
+  <title>Reading | My Website</title>
   <style>
     :root { --bg:#f9f9f9; --card:#fff; --text:#333; --accent:#007acc; --accent-hover:#005999; --border:#e6e6e6; }
     *{box-sizing:border-box} body{margin:0;font-family:Arial, sans-serif;background:var(--bg);color:var(--text);display:grid;grid-template-columns:260px 1fr;min-height:100dvh}
@@ -35,13 +35,29 @@
   <main>
     <div class="card">
       <h1>Traveling</h1>
-      <p class="lead">Trip logs, itineraries, and little things I don’t want to forget.</p>
+      <p class="lead">
+        I love exploring new places and cultures. Here are some of my travel experiences and future plans.
+      </p>
 
-      <h2>Places & Plans</h2>
+      <h2>Future Travel Plans </h2>
       <ul>
-        <li>Recent trips with notes & photos</li>
-        <li>City guides and maps</li>
-        <li>Packing lists & travel hacks</li>
+        <li>Europe</li>
+        <li>Denver</li>
+        <li>Caribbean</li>
       </ul>
 
-      <footer>© <span id="year"></sp
+      <h2>Previous Trips [Undocumented]</h2>
+      <ul>
+        <li>Hangzhou</li>
+        <li>Joshua Tree</li>
+        <li>Hawaii</li>
+        <li>Vegas</li>
+        <li>Japan</li>
+      </ul>
+
+      <footer>© <span id="year"></span></footer>
+    </div>
+  </main>
+  <script>document.getElementById('year').textContent=new Date().getFullYear()</script>
+</body>
+</html>
