@@ -1,5 +1,5 @@
 /* ====================== Config ====================== */
-const DATA_URL = document.body.dataset.src || "data/stocks.json";
+const DATA_URL = document.body.dataset.src || "data/stocks.jsqon";
 
 /* ====================== Lenient JSON(.jsqon) Parser ====================== */
 // Supports comments (//, /* */) and trailing commas.
