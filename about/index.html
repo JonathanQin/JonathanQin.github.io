@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>About Me | Welcome to My Website</title>
 
-  <!-- Theme boot (prevents white flash before dark mode loads) -->
+  <!-- Theme boot (prevents flash before dark mode loads) -->
   <script>
     (function () {
       try {
@@ -17,11 +17,11 @@
     })();
   </script>
 
-  <!-- Shared styles -->
+  <!-- Link to shared stylesheet -->
   <link rel="stylesheet" href="../assets/styles.css">
 </head>
 <body>
-  <!-- Theme toggle button -->
+  <!-- 🌙 / ☀️ Theme Toggle Button -->
   <button id="theme-toggle" aria-label="Toggle theme">🌙</button>
 
   <aside>
@@ -56,8 +56,8 @@
     </div>
   </main>
 
+  <!-- Set current year -->
   <script>
-    // Set the current year
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 

@@ -3,35 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Investing | My Website</title>
-  <style>
-    :root { --bg:#f9f9f9; --card:#fff; --text:#333; --accent:#007acc; --accent-hover:#005999; --border:#e6e6e6; }
-    *{box-sizing:border-box} body{margin:0;font-family:Arial, sans-serif;background:var(--bg);color:var(--text);display:grid;grid-template-columns:260px 1fr;min-height:100dvh}
-    aside{position:sticky;top:0;height:100dvh;border-right:1px solid var(--border);background:#fff;padding:28px 20px}
-    .brand{font-weight:800;font-size:1.2rem;margin-bottom:18px}
-    nav a{display:block;padding:10px 12px;margin:6px 0;text-decoration:none;color:var(--accent);font-weight:600;border-radius:10px}
-    nav a:hover{background:#f1f7ff;color:var(--accent-hover)} .active{background:#eaf4ff}
-    main{padding:40px 6vw}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;box-shadow:0 2px 8px rgba(0,0,0,.04);max-width:900px}
-    h1{margin:0 0 8px;font-size:2rem} p.lead{font-size:1.1rem;color:#555;margin-top:0}
-    footer{margin-top:28px;font-size:.9rem;color:#666}
-    @media (max-width:800px){body{grid-template-columns:1fr} aside{position:static;height:auto;display:flex;align-items:center;gap:12px;padding:14px 16px}
-      nav{display:flex;gap:8px;overflow-x:auto} nav a{white-space:nowrap;padding:8px 10px;margin:0} main{padding:20px 5vw 40px}}
-  </style>
+  <title>About Me | Welcome to My Website</title>
+
+  <!-- Theme boot (prevents flash before dark mode loads) -->
+  <script>
+    (function () {
+      try {
+        const saved = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = saved || (prefersDark ? 'dark' : 'light');
+        if (theme === 'dark') document.documentElement.classList.add('theme-dark');
+      } catch (_) {}
+    })();
+  </script>
+
+  <!-- Link to shared stylesheet -->
+  <link rel="stylesheet" href="../assets/styles.css">
 </head>
 <body>
+  <!-- 🌙 / ☀️ Theme Toggle Button -->
+  <button id="theme-toggle" aria-label="Toggle theme">🌙</button>
+
   <aside>
     <div class="brand">Welcome to My Website</div>
     <nav>
-      <a href="../about/">About Me</a>
-      <a class="active" href="../investing/">Investing</a>
+      <a class="active" href="../about/">About Me</a>
+      <a href="../investing/">Investing</a>
       <a href="../reading/">Reading</a>
       <a href="../traveling/">Traveling</a>
       <a href="../data/">Data</a>
       <a href="../">Home</a>
     </nav>
   </aside>
-
   <main>
     <div class="card">
       <h1>Investing</h1>
@@ -61,6 +64,32 @@
       <footer>© <span id="year"></span></footer>
     </div>
   </main>
-  <script>document.getElementById('year').textContent=new Date().getFullYear()</script>
+
+  <!-- Set current year -->
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+
+  <!-- Theme toggle logic -->
+  <script>
+    (function () {
+      const btn = document.getElementById('theme-toggle');
+      const root = document.documentElement;
+
+      function updateIcon() {
+        const isDark = root.classList.contains('theme-dark');
+        btn.textContent = isDark ? '☀️' : '🌙';
+        btn.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
+      }
+
+      btn.addEventListener('click', () => {
+        const isDark = root.classList.toggle('theme-dark');
+        try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch (_) {}
+        updateIcon();
+      });
+
+      updateIcon();
+    })();
+  </script>
 </body>
 </html>
