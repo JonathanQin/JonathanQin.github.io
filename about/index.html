@@ -79,25 +79,7 @@
   </script>
 
   <!-- Theme toggle logic -->
-  <script>
-    (function () {
-      const btn = document.getElementById('theme-toggle');
-      const root = document.documentElement;
+  <script src="../assets/scripts.js"></script>
 
-      function updateIcon() {
-        const isDark = root.classList.contains('theme-dark');
-        btn.textContent = isDark ? '☀️' : '🌙';
-        btn.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
-      }
-
-      btn.addEventListener('click', () => {
-        const isDark = root.classList.toggle('theme-dark');
-        try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch (_) {}
-        updateIcon();
-      });
-
-      updateIcon();
-    })();
-  </script>
 </body>
 </html>

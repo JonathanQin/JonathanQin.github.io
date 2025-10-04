@@ -28,18 +28,22 @@
     <div class="brand">Welcome to My Website</div>
     <nav>
       <a href="../about/">About Me</a>
-      <a class="active" href="../investing/">Investing</a>
 
-        <div class="nav-dropdown">
-            <a class="active" href="../investing/">Investing ▾</a>
-            <ul class="dropdown">
-                <li><a class="active" href="../investing/story/">Story</a></li>
-                <li><a href="../investing/philosophy/">Philosophy</a></li>
-                <li><a href="../investing/strategies/">Strategies</a></li>
-                <li><a href="../investing/research/">Research</a></li>
-                <li><a href="../investing/performance/">Performance</a></li>
-            </ul>
-        </div>
+      <div class="nav-dropdown">
+        <a class="nav-parent" href="../investing/">Investing</a>
+        <button class="nav-caret"
+                aria-expanded="false"
+                aria-controls="submenu-investing"
+                aria-label="Toggle Investing submenu">▾</button>
+
+        <ul id="submenu-investing" class="dropdown" role="menu">
+          <li><a class="active" role="menuitem" href="../investing/story/">Story</a></li>
+          <li><a role="menuitem" href="../investing/philosophy/">Philosophy</a></li>
+          <li><a role="menuitem" href="../investing/strategies/">Strategies</a></li>
+          <li><a role="menuitem" href="../investing/research/">Research</a></li>
+          <li><a role="menuitem" href="../investing/performance/">Performance</a></li>
+        </ul>
+      </div>
 
       <a href="../reading/">Reading</a>
       <a href="../traveling/">Traveling</a>
@@ -64,31 +68,7 @@
     </div>
   </main>
 
-  <!-- Set current year -->
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
+  <script src="../assets/scripts.js"></script>
 
-  <!-- Theme toggle logic -->
-  <script>
-    (function () {
-      const btn = document.getElementById('theme-toggle');
-      const root = document.documentElement;
-
-      function updateIcon() {
-        const isDark = root.classList.contains('theme-dark');
-        btn.textContent = isDark ? '☀️' : '🌙';
-        btn.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
-      }
-
-      btn.addEventListener('click', () => {
-        const isDark = root.classList.toggle('theme-dark');
-        try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch (_) {}
-        updateIcon();
-      });
-
-      updateIcon();
-    })();
-  </script>
 </body>
 </html>
