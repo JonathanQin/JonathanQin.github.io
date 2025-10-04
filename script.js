@@ -67,8 +67,11 @@ function normalizeStocks(list){
     const curVal  = parseMoney(curRaw);
     const tgtVal  = parseMoney(tgtRaw);
 
-    const rating  = (s.rating ?? "").trim();
-    const strategy= (s.strategy ?? "").trim();
+    const ratingRaw  = (s.rating ?? "").trim();
+    const strategyRaw = (s.strategy ?? "").trim();
+
+    const ratingNumMatch = ratingRaw.match(/-?\d+(?:\.\d+)?/);
+    const ratingVal = ratingNumMatch ? parseFloat(ratingNumMatch[0]) : NaN;
 
     return {
       name, ticker, industry, page,
@@ -80,13 +83,33 @@ function normalizeStocks(list){
       current_price_val: curVal,
       target_price_raw: tgtRaw,
       target_price_val: tgtVal,
-      rating, 
-      strategy
+      rating_raw: ratingRaw,
+      rating_val: ratingVal,
+      strategy_raw: strategyRaw
     };
   });
 }
 
 /* ----- Filters & sorting (unchanged) ----- */
+
+function isPresenceQuery(q){
+  if (!q) return false;
+  const s = q.trim().toLowerCase();
+  return s === "*" || s === "has" || s === "nonzero" || s === "empty" || s === "!*";
+}
+function matchesPresence(valRaw, valNum, q){
+  const s = q.trim().toLowerCase();
+  const has = !!(valRaw && String(valRaw).trim() !== "");
+  if (s === "*" || s === "has") return has;
+  if (s === "empty" || s === "!*") return !has;
+  if (s === "nonzero"){
+    if (typeof valNum === "number" && !isNaN(valNum)) return valNum !== 0;
+    // if not numeric, treat any non-empty as "nonzero"
+    return has;
+  }
+  return true;
+}
+
 function matchesNumericFilter(val, q){
   if (!q) return true;
   const Q = q.trim().toUpperCase();
@@ -118,39 +141,83 @@ function rowMatchesFilters(r){
   if (f.ticker && !r.ticker.toLowerCase().includes(f.ticker)) return false;
   if (f.industry && !r.industry.toLowerCase().includes(f.industry)) return false;
 
-  if (f.rating && !r.rating.toLowerCase().includes(f.rating)) return false;
-  if (f.strategy && !r.strategy.toLowerCase().includes(f.strategy)) return false;
+  // Rating: presence or numeric-range or text
+  if (f.rating){
+    if (isPresenceQuery(f.rating)){
+      if (!matchesPresence(r.rating_raw, r.rating_val, f.rating)) return false;
+    } else {
+      // try numeric/range first; if that fails, fallback to substring
+      const qNum = f.rating;
+      const triedNumeric = matchesNumericFilter(r.rating_val, qNum);
+      if (!isNaN(r.rating_val)){
+        if (!triedNumeric) return false;
+      } else {
+        // not numeric -> do substring text match
+        if (!r.rating_raw.toLowerCase().includes(f.rating)) return false;
+      }
+    }
+  }
 
+  // Strategy: presence or substring
+  if (f.strategy){
+    if (isPresenceQuery(f.strategy)){
+      if (!matchesPresence(r.strategy_raw, NaN, f.strategy)) return false;
+    } else {
+      if (!r.strategy_raw.toLowerCase().includes(f.strategy)) return false;
+    }
+  }
+
+  // Last updated, current price, target price, market cap (existing)
   if (f.last_updated && !matchesDateFilter(r.last_updated_val, f.last_updated)) return false;
   if (f.current_price && !matchesNumericFilter(r.current_price_val, f.current_price)) return false;
-  if (f.target_price  && !matchesNumericFilter(r.target_price_val,  f.target_price))  return false;
-  if (f.market_cap   && !matchesNumericFilter(r.market_cap_val,    f.market_cap))    return false;
+
+  // Target price: add presence keywords
+  if (f.target_price){
+    if (isPresenceQuery(f.target_price)){
+      if (!matchesPresence(r.target_price_raw, r.target_price_val, f.target_price)) return false;
+    } else {
+      if (!matchesNumericFilter(r.target_price_val, f.target_price)) return false;
+    }
+  }
+
+  if (f.market_cap && !matchesNumericFilter(r.market_cap_val, f.market_cap)) return false;
 
   if (state.global){
-    const blob = `${r.name} ${r.ticker} ${r.industry} ${r.rating} ${r.strategy} ${r.market_cap_raw} ${r.last_updated_raw} ${r.current_price_raw} ${r.target_price_raw}`.toLowerCase();
+    const blob = `${r.name} ${r.ticker} ${r.industry} ${r.rating_raw} ${r.strategy_raw} ${r.market_cap_raw} ${r.last_updated_raw} ${r.current_price_raw} ${r.target_price_raw}`.toLowerCase();
     if (!blob.includes(state.global)) return false;
   }
   return true;
 }
 
 function sortRows(rows){
-  const {key, dir} = state.sort; const mult = dir === "asc" ? 1 : -1;
+  const {key, dir} = state.sort;
+  const mult = dir === "asc" ? 1 : -1;
   return rows.slice().sort((a,b)=>{
-    const numCols = new Set(["market_cap","current_price","target_price"]);
+    const numCols = new Set(["market_cap","current_price","target_price","rating"]); // rating added
     if (numCols.has(key)){
-      const av=a[`${key}_val`], bv=b[`${key}_val`];
-      if (isNaN(av) && isNaN(bv)) return 0; if (isNaN(av)) return 1; if (isNaN(bv)) return -1;
-      return (av - bv) * mult;
+      const va = key === "rating" ? a.rating_val : a[`${key}_val`];
+      const vb = key === "rating" ? b.rating_val : b[`${key}_val`];
+      const aNa = isNaN(va), bNa = isNaN(vb);
+      if (aNa && bNa) return 0;
+      if (aNa) return 1;
+      if (bNa) return -1;
+      return (va - vb) * mult;
     }
     if (key === "last_updated"){
-      const av=a.last_updated_val, bv=b.last_updated_val;
-      if (isNaN(av) && isNaN(bv)) return 0; if (isNaN(av)) return 1; if (isNaN(bv)) return -1;
+      const av = a.last_updated_val, bv = b.last_updated_val;
+      if (isNaN(av) && isNaN(bv)) return 0;
+      if (isNaN(av)) return 1;
+      if (isNaN(bv)) return -1;
       return (av - bv) * mult;
     }
-    const sa=String(a[key]||"").toLowerCase(), sb=String(b[key]||"").toLowerCase();
-    if (sa < sb) return -1 * mult; if (sa > sb) return 1 * mult; return 0;
+    const sa = String(a[key]||"").toLowerCase();
+    const sb = String(b[key]||"").toLowerCase();
+    if (sa < sb) return -1 * mult;
+    if (sa > sb) return  1 * mult;
+    return 0;
   });
 }
+
 
 /* ====================== Render ====================== */
 function renderHeadSortIndicators(){
@@ -178,9 +245,10 @@ function renderTable(){
     const tdInd  = document.createElement("td"); tdInd.textContent  = r.industry || "—";
     const tdCur  = document.createElement("td"); tdCur.className    = "num"; tdCur.textContent = isNaN(r.current_price_val) ? (r.current_price_raw || "—") : fmtMoney(r.current_price_val);
     const tdTgt  = document.createElement("td"); tdTgt.className    = "num"; tdTgt.textContent = isNaN(r.target_price_val) ? (r.target_price_raw || "—") : fmtMoney(r.target_price_val);
+    
+    const tdRat  = document.createElement("td"); tdRat.textContent  = r.rating_raw || "—";
+    const tdStr  = document.createElement("td"); tdStr.textContent  = r.strategy_raw || "—";
 
-    const tdRat  = document.createElement("td"); tdRat.textContent  = r.rating || "—";
-    const tdStr  = document.createElement("td"); tdStr.textContent  = r.strategy || "—";
     const tdCap  = document.createElement("td"); tdCap.className    = "num";
     tdCap.textContent = isNaN(r.market_cap_val) ? (r.market_cap_raw || "—") :
       (()=>{ const n=r.market_cap_val, u=[[1e12,"T"],[1e9,"B"],[1e6,"M"],[1e3,"K"]]; for(const [v,s] of u){ if(n>=v) return `$${(n/v).toFixed(2).replace(/\.00$/,'')}${s}`;} return `$${n.toLocaleString()}`; })();

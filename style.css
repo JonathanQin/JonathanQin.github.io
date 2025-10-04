@@ -78,7 +78,12 @@ body{
 .site-footer{ margin:2.25rem 0 2.5rem; color:var(--muted); }
 
 /* ---- Table ---- */
-.table-wrap{ overflow:auto; }
+.table-wrap {
+  max-height: 70vh;       /* scroll height */
+  overflow: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+}
 .table{
   width:100%; border-collapse:separate; border-spacing:0;
   border:1px solid var(--border); border-radius:14px; overflow:hidden;
@@ -108,3 +113,39 @@ body{
 .btn-link:hover{ border-color:var(--brand-2); box-shadow:0 0 0 4px var(--ring); }
 
 code{ background:#0d142c; padding:.1rem .3rem; border-radius:6px; border:1px solid rgba(255,255,255,.08); }
+
+/* Larger table look */
+#stocks-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 15.5px;      /* a bit larger */
+}
+
+#stocks-table th,
+#stocks-table td {
+  padding: 12px 14px;     /* roomier cells */
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+#stocks-table thead th {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 2;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+#stocks-table thead .filters input {
+  width: 100%;
+  padding: 6px 8px;
+  font-size: 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  outline: none;
+}
+
+#stocks-table .num { text-align: right; }
+#stocks-table .action { white-space: nowrap; }
+.sort-indicator { margin-left: 6px; opacity: 0.7; }
