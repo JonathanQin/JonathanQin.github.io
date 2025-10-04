@@ -60,7 +60,15 @@
       <footer class="site-footer small muted">© <span id="year"></span> • Stock Hub</footer>
     </main>
   </div>
-
+  <script>
+    // highlight active tab
+    (function(){
+      const page = document.body.dataset.page || "";
+      document.querySelectorAll(".tab-link").forEach(a=>{
+        if (a.getAttribute("data-tab") === page) a.classList.add("active");
+      });
+    })();
+  </script>
   <script src="script.js" defer></script>
 </body>
 </html>
