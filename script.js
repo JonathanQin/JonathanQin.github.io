@@ -36,42 +36,48 @@ function fmtDate(ts){ if (isNaN(ts)) return "—"; const d = new Date(ts); const
 const state = {
   stocks: [],
   sort: { key: "name", dir: "asc" },
-  filters: { name:"", ticker:"", industry:"", market_cap:"", last_updated:"", current_price:"", target_price:"" },
+  filters: {
+    name:"", ticker:"", industry:"", market_cap:"",
+    last_updated:"", current_price:"", target_price:"",
+    rating:"", strategy:""                       // NEW
+  },
   global: ""
 };
+
 
 /* ====================== DOM Refs ====================== */
 const thead = $("#stocks-table thead");
 const tbody = $("#stocks-table tbody");
 
 /* ====================== Data pipeline ====================== */
+/* ====================== Data pipeline ====================== */
 function normalizeStocks(list){
   return (list || []).map(s=>{
     const name = s.name ?? s.company ?? s.company_name ?? "";
     const ticker = (s.ticker ?? s.symbol ?? "").toUpperCase().trim();
     const industry = s.industry ?? s.sector ?? "";
-    // FIX: use ${ticker}, not {ticker}
-    const page = s.page || (ticker ? `stocks/${ticker}.html` : "#");
+    const page = s.page || (ticker ? `stocks/${ticker}.html` : "#"); // fixed ${ticker}
 
     const capRaw = s.market_cap ?? s.marketcap ?? s["market capitalization"] ?? s.mktcap ?? "";
     const lastRaw = s.last_updated ?? s.updated_at ?? s.as_of ?? s.date ?? "";
     const curRaw  = s.current_price ?? s.price ?? s.last_price ?? s.close ?? "";
     const tgtRaw  = s.target_price ?? s.pt ?? s.price_target ?? "";
 
-    const lastVal = parseDate(lastRaw);
-    const curVal  = parseMoney(curRaw);
-    const tgtVal  = parseMoney(tgtRaw);
+    const rating  = (s.rating ?? "").trim();     // NEW
+    const strategy= (s.strategy ?? "").trim();   // NEW
 
     return {
       name, ticker, industry, page,
       market_cap_raw: capRaw,
       market_cap_val: parseMoney(capRaw),
       last_updated_raw: lastRaw,
-      last_updated_val: lastVal,
+      last_updated_val: parseDate(lastRaw),
       current_price_raw: curRaw,
-      current_price_val: curVal,
+      current_price_val: parseMoney(curRaw),
       target_price_raw: tgtRaw,
-      target_price_val: tgtVal
+      target_price_val: parseMoney(tgtRaw),
+      rating,                                       // NEW
+      strategy                                      // NEW
     };
   });
 }

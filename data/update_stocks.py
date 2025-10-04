@@ -68,14 +68,25 @@ class StockDatasetUpdater:
         existing = self._load_existing()
         universe = self._fetch_universe()
         merged = self._merge_refresh_all(existing, universe)  # preserves last_updated
+        merged = [self._ensure_rating_strategy(rec) for rec in merged]
         self._write_json(merged)
         self.logger.info("Wrote %d records to %s", len(merged), self.json_path)
 
-    def upsert_ticker(self, ticker: str, *, target_price: Optional[str] = None) -> None:
+    def _ensure_rating_strategy(self, rec: Dict) -> Dict:
+        """Guarantee rating/strategy keys exist (empty string when missing/None)."""
+        r = rec.copy()
+        if r.get("rating") is None or "rating" not in r:
+            r["rating"] = ""
+        if r.get("strategy") is None or "strategy" not in r:
+            r["strategy"] = ""
+        return r
+
+    def upsert_ticker(self, ticker: str, *, target_price: Optional[str] = None,
+                      strategy: Optional[str] = None, rating: Optional[str] = None) -> None:
         """
         Add/update ONE ticker from screener; do NOT modify last_updated.
-        If `target_price` is passed, we update only that field (still do not touch last_updated).
-        IMPORTANT: If an existing industry is non-empty, DO NOT overwrite it; only fill if missing.
+        - target_price/strategy/rating are replaced only if provided (else preserved).
+        - existing non-empty fields are preserved (as before).
         """
         ticker = ticker.strip().upper()
         existing = self._load_existing()
@@ -94,25 +105,26 @@ class StockDatasetUpdater:
             }
 
         prev = ex_by_ticker.get(ticker, {})
-        # Preserve industry if existing is non-empty; else use fresh
-        prev_industry = (prev.get("industry") or "").strip()
-        industry = prev_industry if prev_industry else (fresh.get("industry") or "")
+        prev_ind = (prev.get("industry") or "").strip()
+        industry = prev_ind if prev_ind else (fresh.get("industry") or "")
 
         merged = {
             "name": fresh["name"],
             "ticker": ticker,
-            "industry": industry,  # <-- do not overwrite non-empty existing value
+            "industry": industry,
             "market_cap": fresh["market_cap"],
-            "last_updated": prev.get("last_updated", ""),  # unchanged
+            "last_updated": prev.get("last_updated", ""),
             "current_price": fresh["current_price"],
-            "target_price": (str(target_price) if target_price is not None else prev.get("target_price", "")),
+            "target_price": str(target_price) if target_price is not None else prev.get("target_price", ""),
+            "strategy":     str(strategy)     if strategy     is not None else prev.get("strategy", ""),
+            "rating":       str(rating)       if rating       is not None else prev.get("rating", ""),
             "page": f"stocks/{ticker}.html",
         }
 
         ex_by_ticker[ticker] = merged
-        out = [ex_by_ticker[t] for t in sorted(ex_by_ticker.keys())]
+        out = [self._ensure_rating_strategy(ex_by_ticker[t]) for t in sorted(ex_by_ticker.keys())]
         self._write_json(out)
-        self.logger.info("Upserted %s (last_updated unchanged; industry preserved if present) -> %s", ticker, self.json_path)
+        self.logger.info("Upserted %s (last_updated unchanged) -> %s", ticker, self.json_path)
 
     def set_target_price(self, ticker: str, target_price: str) -> None:
         """
@@ -146,6 +158,27 @@ class StockDatasetUpdater:
         out = [by_ticker[t] for t in sorted(by_ticker.keys())]
         self._write_json(out)
         self.logger.info("Set target price for %s (last_updated set) -> %s", ticker, self.json_path)
+        
+    def set_strategy(self, ticker: str, strategy: str) -> None:
+        """Update ONLY the strategy and bump last_updated (today)."""
+        self._set_field_and_bump(ticker, field="strategy", value=str(strategy))  # NEW
+
+    def set_rating(self, ticker: str, rating: str) -> None:
+        """Set/override rating; does NOT change last_updated."""
+        ticker = ticker.strip().upper()
+        data = self._load_existing()
+        by_ticker = {(e.get("ticker") or "").upper(): e for e in data}
+        rec = by_ticker.get(ticker, {
+            "name": "", "ticker": ticker, "industry": "", "market_cap": "",
+            "last_updated": self._today(), "current_price": "", "target_price": "",
+            "strategy": "", "rating": "", "page": f"stocks/{ticker}.html"
+        }).copy()
+        rec["rating"] = str(rating)
+        rec["page"] = f"stocks/{ticker}.html"
+        by_ticker[ticker] = rec
+        out = [by_ticker[t] for t in sorted(by_ticker.keys())]
+        self._write_json(out)
+        self.logger.info("Set rating for %s -> %s", ticker, rating or "(empty)")
 
     def set_last_updated(self, ticker: str, date: Optional[str] = None) -> None:
         """
@@ -168,7 +201,7 @@ class StockDatasetUpdater:
             "page": f"stocks/{ticker}.html",
         }).copy()
 
-        if date is "":
+        if date == "":
             rec["last_updated"] = self._today()
         elif date == "delete":
             rec["last_updated"] = ""
@@ -213,6 +246,55 @@ class StockDatasetUpdater:
         self._write_json(out)
         self.logger.info("Set industry for %s -> %s", ticker, industry or "(empty)")
 
+    # ---------- internal helper ----------
+    def _set_field_and_bump(self, ticker: str, *, field: str, value: str) -> None:
+        """Set one field and bump last_updated to today (used by target_price & strategy)."""
+        ticker = ticker.strip().upper()
+        data = self._load_existing()
+        by_ticker = {(e.get("ticker") or "").upper(): e for e in data}
+
+        rec = by_ticker.get(ticker)
+        if not rec:
+            rec = {
+                "name": "", "ticker": ticker, "industry": "", "market_cap": "",
+                "last_updated": self._today(), "current_price": "",
+                "target_price": "" if field != "target_price" else value,
+                "strategy": ""     if field != "strategy"     else value,
+                "rating": "",
+                "page": f"stocks/{ticker}.html",
+            }
+        else:
+            rec = rec.copy()
+            rec[field] = value
+            rec["last_updated"] = self._today()
+            rec["page"] = f"stocks/{ticker}.html"
+
+        by_ticker[ticker] = rec
+        out = [by_ticker[t] for t in sorted(by_ticker.keys())]
+        self._write_json(out)
+        self.logger.info("Set %s for %s (last_updated set) -> %s", field, ticker, self.json_path)
+
+    def _merge_refresh_all(self, existing: List[Dict], universe: Dict[str, Dict]) -> List[Dict]:
+        """Full refresh (ALL): preserve last_updated, target_price, strategy, rating."""
+        ex_by_t = {(e.get("ticker") or "").upper(): e for e in (existing or [])}
+        updated: Dict[str, Dict] = {}
+        for tkr, fresh in universe.items():
+            prev = ex_by_t.get(tkr, {})
+            merged = {
+                "name": fresh["name"],
+                "ticker": tkr,
+                "industry": fresh["industry"],
+                "market_cap": fresh["market_cap"],
+                "last_updated": prev.get("last_updated", ""),
+                "current_price": fresh["current_price"],
+                "target_price": prev.get("target_price", ""),
+                "strategy":     prev.get("strategy", ""),    # NEW
+                "rating":       prev.get("rating", ""),      # NEW
+                "page": f"stocks/{tkr}.html",
+            }
+            updated[tkr] = merged
+        return [updated[t] for t in sorted(updated.keys())]
+    
     # ---------------- Fetch helpers ----------------
 
     def _fetch_universe(self) -> Dict[str, Dict]:
@@ -381,12 +463,14 @@ def main():
         print("\nStock Dataset Updater")
         print("=====================")
         print("[1] Refresh ALL stocks (no change to last_updated)")
-        print("[2] Add/Update SINGLE ticker (no change to last_updated; preserves industry if present)")
+        print("[2] Add/Update SINGLE ticker (no change to last_updated; preserves non-fresh fields if present)")
         print("[3] Set ONLY target price (updates last_updated to today)")
         print("[4] Set/Update last_updated manually")
         print("[5] Set/Update industry manually (no change to last_updated)")
-        print("[6] Exit")
-        choice = input("Select an option [1/2/3/4/5/6]: ").strip()
+        print("[6] Set/Update strategy (updates last_updated to today)")
+        print("[7] Set/Update rating (updates last_updated to today)")
+        print("[8] Exit")
+        choice = input("Select an option [1/2/3/4/5/6/7/8]: ").strip()
 
         if choice == "1":
             updater.update_json()
@@ -419,8 +503,18 @@ def main():
             updater.set_industry(tkr, ind)
 
         elif choice == "6":
+            tkr = input("Ticker: ").strip().upper()
+            val = input("Strategy (e.g., Swing, LT, Momentum): ").strip()
+            updater.set_strategy(tkr, val)
+
+        elif choice == "7":
+            tkr = input("Ticker: ").strip().upper()
+            val = input("Rating (e.g., Buy, Hold, Sell, A/B/C): ").strip()
+            updater.set_rating(tkr, val)
+
+        elif choice == "8":
             print("Exiting.")
-            break
+            return
 
         else:
             print("No action selected.")
