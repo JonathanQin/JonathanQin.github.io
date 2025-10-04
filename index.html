@@ -3,53 +3,60 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Stock Research Hub</title>
+  <title>JQ Capital Research</title>
   <link rel="preload" href="style.css" as="style">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body data-page="home" data-src="data/stocks.json">
   <header class="site-header">
     <div class="container">
-      <h1 class="site-title">📈 Stock Research Hub</h1>
+      <h1 class="site-title">📈 JQ Capital Research</h1>
       <p class="site-subtitle">Search and filter by Name, Ticker, Industry, or Market Cap</p>
+      <p class="site-description">Documentation of my equity research to support my learning and investment decisions. </p>
     </div>
   </header>
 
-  <main class="container">
-    <section class="card">
-      <div class="card-header">
-        <h2>Universe</h2>
-        <input id="global-search" class="input" type="search" placeholder="Search all columns…" aria-label="Search table">
-      </div>
 
-      <div class="table-wrap">
-        <table id="stocks-table" class="table" aria-describedby="table-help">
-          <thead>
-            <tr>
-              <th data-col="name" data-sortable="true">Name</th>
-              <th data-col="ticker" data-sortable="true">Ticker</th>
-              <th data-col="industry" data-sortable="true">Industry</th>
-              <th data-col="market_cap" data-sortable="true" class="num">Market Cap</th>
-              <th class="action">Page</th>
-            </tr>
-            <tr class="filters">
-              <th><input class="input input-sm" data-filter="name" placeholder="Filter name"></th>
-              <th><input class="input input-sm" data-filter="ticker" placeholder="Filter ticker"></th>
-              <th><input class="input input-sm" data-filter="industry" placeholder="Filter industry"></th>
-              <th><input class="input input-sm" data-filter="market_cap" placeholder='e.g. >10B, 500M-2B'></th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody><!-- rows injected by script.js --></tbody>
-        </table>
-      </div>
+<main class="container">
+  <section class="card">
+    <div class="card-header">
+      <h2>Universe</h2>
+      <input id="global-search" class="input" type="search" placeholder="Search all columns…" aria-label="Search table">
+    </div>
 
-      <div id="table-help" class="small muted">
-        Tip: Click headers to sort • Market cap filter supports <code>&gt;</code>, <code>&gt;=</code>, <code>&lt;</code>, ranges (e.g. <code>500M-2B</code>) and suffixes K/M/B/T.
-      </div>
-    </section>
-  </main>
+    <div class="table-wrap">
+      <table id="stocks-table" class="table" aria-describedby="table-help">
+        <thead>
+          <tr>
+            <th data-col="name" data-sortable="true">Name</th>
+            <th data-col="ticker" data-sortable="true">Ticker</th>
+            <th data-col="industry" data-sortable="true">Industry</th>
+            <th data-col="last_updated" data-sortable="true">Last Updated</th>
+            <th data-col="current_price" data-sortable="true" class="num">Current Price</th>
+            <th data-col="target_price" data-sortable="true" class="num">Target Price</th>
+            <th data-col="market_cap" data-sortable="true" class="num">Market Cap</th>
+            <th class="action">Page</th>
+          </tr>
+          <tr class="filters">
+            <th><input class="input input-sm" data-filter="name" placeholder="Filter name"></th>
+            <th><input class="input input-sm" data-filter="ticker" placeholder="Filter ticker"></th>
+            <th><input class="input input-sm" data-filter="industry" placeholder="Filter industry"></th>
+            <th><input class="input input-sm" data-filter="last_updated" placeholder=">=2025-01-01 or 2024-01-01-2024-12-31"></th>
+            <th><input class="input input-sm" data-filter="current_price" placeholder=">100, 50-80"></th>
+            <th><input class="input input-sm" data-filter="target_price" placeholder=">100, 50-80"></th>
+            <th><input class="input input-sm" data-filter="market_cap" placeholder=">10B, 500M-2B"></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody><!-- rows injected by script.js --></tbody>
+      </table>
+    </div>
 
+    <div id="table-help" class="small muted">
+      Tip: Click headers to sort • Number filters support <code>&gt;</code>, <code>&gt;=</code>, <code>&lt;</code>, ranges (e.g. <code>500M-2B</code>) and suffixes K/M/B/T. Dates support operators and ranges like <code>2025-01-01-2025-06-30</code>.
+    </div>
+  </section>
+</main>
   <footer class="site-footer">
     <div class="container">
       <span>© <span id="year"></span> Stock Research Hub</span>
