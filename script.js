@@ -21,7 +21,6 @@ const debounce = (fn, ms=200) => { let t; return (...a)=>{ clearTimeout(t); t=se
 // Sector table refs
 const sThead = document.querySelector("#sectors-table thead");
 const sTbody = document.querySelector("#sectors-table tbody");
-
 function parseMoney(x){
   if (x == null || x === "") return NaN;
   const s = String(x).trim().replace(/[\$,]/g,'').toUpperCase();
@@ -224,23 +223,41 @@ function sortRows(rows){
 
 /* ====================== Render ====================== */
 // ---- Sector/Industry aggregation ----
+function slugifyIndustry(name){
+  return (name || "sector")
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+function sectorPageFor(industry){
+  return `sectors/${slugifyIndustry(industry)}.html`;
+}
 function median(nums){
-  const arr = nums.filter(x=>!isNaN(x)).sort((a,b)=>a-b);
+  const arr = nums.filter(x => !isNaN(x)).sort((a,b)=>a-b);
   if (!arr.length) return NaN;
   const m = Math.floor(arr.length/2);
-  return arr.length % 2 ? arr[m] : (arr[m-1] + arr[m]) / 2;
+  return arr.length % 2 ? arr[m] : (arr[m-1]+arr[m])/2;
 }
-function sum(nums){
-  return nums.filter(x=>!isNaN(x)).reduce((a,b)=>a+b,0);
+function sum(nums){ return nums.filter(x=>!isNaN(x)).reduce((a,b)=>a+b,0); }
+function fmtPct(n){ return isNaN(n) ? "—" : (n.toFixed(1).replace(/\.0$/,'') + "%"); }
+function fmtCapCompact(n){
+  if (n == null || isNaN(n)) return "—";
+  const u = [[1e12,"T"],[1e9,"B"],[1e6,"M"],[1e3,"K"]];
+  for (const [v,s] of u) if (n>=v) return "$"+(n/v).toFixed(2).replace(/\.00$/,'')+s;
+  return "$"+n.toLocaleString();
 }
 function groupByIndustry(rows){
-  const map = new Map();
+  const m = new Map();
   rows.forEach(r=>{
+    // keep only covered rows
+    const hasLast = r.last_updated_raw && String(r.last_updated_raw).trim() !== "";
+    if (!hasLast) return;
     const key = (r.industry || "—").trim() || "—";
-    if (!map.has(key)) map.set(key, []);
-    map.get(key).push(r);
+    if (!m.has(key)) m.set(key, []);
+    m.get(key).push(r);
   });
-  return map;
+  return m;
 }
 function buildSectorRows(rows){
   const g = groupByIndustry(rows);
@@ -266,7 +283,8 @@ function buildSectorRows(rows){
       mktcap_total: sum(caps),
       cur_median: curMed,
       tgt_median: tgtMed,
-      upside_pct: upside
+      upside_pct: upside,
+      page: sectorPageFor(industry) 
     });
   }
   return out;
@@ -328,6 +346,14 @@ function renderSectors(allRows){
     const tdCur = document.createElement("td"); tdCur.className="num"; tdCur.textContent = isNaN(r.cur_median) ? "—" : fmtMoney(r.cur_median);
     const tdTgt = document.createElement("td"); tdTgt.className="num"; tdTgt.textContent = isNaN(r.tgt_median) ? "—" : fmtMoney(r.tgt_median);
     const tdUps = document.createElement("td"); tdUps.className="num"; tdUps.textContent = fmtPct(r.upside_pct);
+
+    const tdPage = document.createElement("td"); tdPage.className="action";
+    const a = document.createElement("a");
+    a.href = r.page;
+    a.className = "btn-link";
+    a.textContent = "Open";
+    a.setAttribute("aria-label", `Open sector page for ${r.industry}`);
+    tdPage.appendChild(a);
 
     [tdInd, tdCnt, tdCov, tdCovP, tdCap, tdCur, tdTgt, tdUps].forEach(td=>tr.appendChild(td));
     frag.appendChild(tr);
