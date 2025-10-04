@@ -1,0 +1,105 @@
+/* ===== Base variables (light) ===== */
+:root {
+  --bg: #f9f9f9;
+  --card: #ffffff;
+  --text: #333333;
+  --accent: #007acc;
+  --accent-hover: #005999;
+  --border: #e6e6e6;
+}
+
+/* ===== Dark theme overrides ===== */
+html.theme-dark {
+  --bg: #0d1117;
+  --card: #161b22;
+  --text: #c9d1d9;
+  --accent: #58a6ff;
+  --accent-hover: #1f6feb;
+  --border: #30363d;
+}
+
+/* ===== Layout (your existing styles, now using variables) ===== */
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: 100dvh;
+}
+
+/* Sidebar */
+aside {
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  border-right: 1px solid var(--border);
+  background: var(--card);
+  padding: 28px 20px;
+}
+.brand {
+  font-weight: 800;
+  font-size: 1.2rem;
+  margin-bottom: 18px;
+}
+nav a {
+  display: block;
+  padding: 10px 12px;
+  margin: 6px 0;
+  text-decoration: none;
+  color: var(--accent);
+  font-weight: 600;
+  border-radius: 10px;
+}
+nav a:hover { background: rgba(0,0,0,0.04); color: var(--accent-hover); }
+html.theme-dark nav a:hover { background: rgba(255,255,255,0.06); }
+.active { background: rgba(88,166,255,0.15); }
+
+/* Main */
+main { padding: 40px 6vw; }
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  max-width: 900px;
+}
+h1 { margin: 0 0 8px; font-size: 2rem; }
+p.lead { font-size: 1.1rem; color: #555; margin-top: 0; }
+html.theme-dark p.lead { color: #b6bec7; }
+footer { margin-top: 28px; font-size: 0.9rem; color: #666; }
+html.theme-dark footer { color: #9aa4ad; }
+
+/* Mobile */
+@media (max-width: 800px) {
+  body { grid-template-columns: 1fr; }
+  aside {
+    position: static;
+    height: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+  }
+  nav { display: flex; gap: 8px; overflow-x: auto; }
+  nav a { white-space: nowrap; padding: 8px 10px; margin: 0; }
+  main { padding: 20px 5vw 40px; }
+}
+
+/* ===== Theme toggle button ===== */
+#theme-toggle {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+#theme-toggle:hover { filter: brightness(1.05); }
