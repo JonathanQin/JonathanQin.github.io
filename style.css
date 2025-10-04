@@ -137,6 +137,7 @@ code{ background:#0d142c; padding:.1rem .3rem; border-radius:6px; border:1px sol
   padding: .75rem .75rem 1rem;
   font-size: 1.05rem;
 }
+/*
 .nav{
   display:flex; flex-direction:column; gap:.25rem;
   padding: 0 .35rem;
@@ -156,7 +157,7 @@ code{ background:#0d142c; padding:.1rem .3rem; border-radius:6px; border:1px sol
   background: #12204a;
   border-color: var(--brand-2);
   box-shadow: 0 0 0 4px var(--ring);
-}
+}*/
 
 .main{
   padding: 0 1rem;
