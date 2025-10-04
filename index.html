@@ -3,22 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Stock Research Hub</title>
+  <title>JQ Equity Research</title>
   <link rel="preload" href="style.css" as="style">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body data-page="home">
   <header class="site-header">
     <div class="container">
-      <h1 class="site-title">📈 Stock Research Hub</h1>
-      <p class="site-subtitle">Quick links to individual stock research pages</p>
+      <h1 class="site-title">📈 JQ Equity Research</h1>
+      <p class="site-subtitle">Quick links to my bottom-up equity research, due diligence notes, and investments</p>
     </div>
   </header>
 
   <main class="container">
     <section class="card">
       <div class="card-header">
-        <h2>Stocks</h2>
+        <h2>Stock Notes</h2>
         <input id="stock-filter" class="input" type="search" placeholder="Filter by symbol or name…" aria-label="Filter stocks">
       </div>
 
@@ -26,9 +26,7 @@
       <ul id="stock-list" class="link-list" data-dynamic="true">
         <!-- Populated by script.js using the STOCKS array -->
         <!-- Fallback static items if JS is disabled: -->
-        <noscript>
-          <li><a class="btn-link" href="AAPL.html">Apple (AAPL)</a></li>
-        </noscript>
+        <ul id="stock-list" data-dynamic="true">
       </ul>
 
       <div class="small muted">

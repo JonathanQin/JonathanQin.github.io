@@ -1,0 +1,5 @@
+[
+  { "symbol": "AAPL", "name": "Apple", "href": "stocks/AAPL.html", "sector": "Technology" },
+  { "symbol": "MSFT", "name": "Microsoft", "href": "stocks/MSFT.html", "sector": "Technology" },
+  { "symbol": "UAL",  "name": "United Airlines", "href": "stocks/UAL.html", "sector": "Airlines" }
+]
