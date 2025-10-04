@@ -1,16 +1,304 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta http-equiv="refresh" content="0; url=about/">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Redirecting…</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Investing Research | Home</title>
+  <meta name="description" content="Landing page for my investing research with links to company research pages." />
+
+  <!-- Minimal, readable dark-first styling -->
   <style>
-    body { font-family: Arial, sans-serif; margin: 40px; text-align: center; }
-    a { color: #007acc; text-decoration: none; font-weight: bold; }
-    a:hover { color: #005999; }
+    :root{
+      --bg:#0f1216;--panel:#151a21;--muted:#9aa4b2;--text:#e6edf3;--link:#61a8ff;--accent:#2b7cff;--chip:#1d2430;--ok:#2ecc71;--warn:#ffb020;
+      --radius:14px; --gap:14px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font:16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+      background:var(--bg); color:var(--text);
+      display:grid; grid-template-columns: 260px 1fr; min-height:100svh;
+    }
+    aside{
+      padding:24px 18px; background:linear-gradient(180deg, #0f1216 0, #0d1014 100%);
+      border-right:1px solid #202632; position:sticky; top:0; height:100svh;
+    }
+    .brand{font-weight:700; letter-spacing:.2px; margin-bottom:18px}
+    .sub{color:var(--muted); font-size:.92rem; margin-top:-6px; margin-bottom:20px}
+    nav{display:flex; flex-direction:column; gap:6px}
+    nav a{
+      display:block; padding:10px 12px; border-radius:10px; color:var(--text); text-decoration:none;
+    }
+    nav a:hover{background:#18202b}
+    nav a[aria-current="page"]{background:#1a2330; color:#dbe7ff}
+    .footer-note{color:var(--muted); font-size:.85rem; margin-top:auto; opacity:.8}
+
+    main{padding:24px; display:grid; gap:var(--gap); align-content:start}
+    .panel{
+      background:var(--panel); border:1px solid #202632; border-radius:var(--radius); padding:16px;
+    }
+    .row{display:grid; grid-template-columns: 1fr 1fr; gap:var(--gap)}
+    @media (max-width: 900px){
+      body{grid-template-columns: 1fr}
+      aside{position:static; height:auto}
+      .row{grid-template-columns: 1fr}
+    }
+
+    /* Toolbar */
+    .toolbar{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .search{
+      flex:1; min-width:220px; position:relative;
+    }
+    .search input{
+      width:100%; padding:10px 12px 10px 36px; border-radius:10px; border:1px solid #273140;
+      background:#0f141b; color:var(--text); outline:none;
+    }
+    .search .icon{position:absolute; left:10px; top:50%; translate:0 -50%; opacity:.6}
+    .chips{display:flex; gap:8px; flex-wrap:wrap}
+    .chip{
+      background:var(--chip); color:#c9d4e0; border:1px solid #273140; padding:6px 10px; border-radius:999px; cursor:pointer; user-select:none;
+    }
+    .chip[data-active="true"]{outline:2px solid var(--accent); color:#eaf2ff}
+    button, .btn{
+      background:#0f141b; color:#e6edf3; border:1px solid #2a3545; border-radius:10px; padding:9px 12px; cursor:pointer; text-decoration:none;
+    }
+    button:hover, .btn:hover{border-color:#3b4960}
+
+    /* Companies grid */
+    .grid{display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:var(--gap)}
+    .card{
+      background:#111720; border:1px solid #202632; border-radius:16px; padding:14px; display:grid; gap:10px;
+      transition:transform .08s ease, border-color .08s ease;
+    }
+    .card:hover{transform:translateY(-2px); border-color:#314156}
+    .ticker{font-weight:700; letter-spacing:.4px}
+    .meta{display:flex; gap:8px; flex-wrap:wrap; color:var(--muted); font-size:.9rem}
+    .tag{background:#0f141b; border:1px solid #283446; padding:2px 8px; border-radius:999px; font-size:.82rem; color:#c8d4e5}
+    .signal.ok{color:var(--ok)} .signal.warn{color:var(--warn)}
+    .card a{color:var(--link); text-decoration:none}
+    .card a:hover{text-decoration:underline}
+
+    /* Small helpers */
+    h2{margin:0 0 8px 0; font-size:1.2rem}
+    .muted{color:var(--muted)}
+    .list{display:grid; gap:10px}
+    .list a{display:flex; justify-content:space-between}
+    .kbd{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; background:#0f141b; border:1px solid #283446; padding:.1rem .4rem; border-radius:6px; font-size:.85em; color:#cfe1ff}
   </style>
 </head>
+
 <body>
-  <p>Redirecting to <a href="about/">About Me</a>…</p>
+  <!-- Sidebar -->
+  <aside>
+    <div class="brand">📈 Investing Research</div>
+    <div class="sub">Landing page for company notes, models, and links.</div>
+    <nav>
+      <a href="#" aria-current="page">Home</a>
+      <a href="./methods/">Methods & Framework</a>
+      <a href="./watchlist/">Watchlist</a>
+      <a href="./notes/">General Notes</a>
+      <a href="./data/">Data & Sheets</a>
+    </nav>
+    <div class="footer-note">
+      Tip: press <span class="kbd">/</span> to focus search.
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main>
+    <!-- Toolbar -->
+    <section class="panel">
+      <div class="toolbar" role="search">
+        <div class="search">
+          <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 21l-4.2-4.2m1.2-4.3a7.5 7.5 0 11-15 0 7.5 7.5 0 0115 0z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <input id="search" type="search" placeholder="Search companies by name, ticker, sector, tags…" autocomplete="off" />
+        </div>
+        <div class="chips" aria-label="Quick filters">
+          <span class="chip" data-filter="sector:Tech">Tech</span>
+          <span class="chip" data-filter="sector:Consumer">Consumer</span>
+          <span class="chip" data-filter="sector:Industrial">Industrial</span>
+          <span class="chip" data-filter="rating:Watch">Watch</span>
+          <span class="chip" data-filter="rating:Researching">Researching</span>
+        </div>
+        <a class="btn" href="./_templates/new-company.html">+ New Company Page</a>
+      </div>
+    </section>
+
+    <!-- Companies -->
+    <section class="panel">
+      <h2>Companies</h2>
+      <div id="companies" class="grid" aria-live="polite">
+        <!-- Card template (duplicate & edit) -->
+        <article class="card" data-name="Apple" data-ticker="AAPL" data-sector="Tech" data-tags="hardware,smartphone,services" data-rating="Researching">
+          <div class="meta">
+            <span class="ticker">AAPL</span>
+            <span class="tag">Tech</span>
+            <span class="tag">Services</span>
+          </div>
+          <div>
+            <div><strong>Apple Inc.</strong></div>
+            <div class="muted">iPhone/services mix shift; visionOS optionality</div>
+          </div>
+          <div class="meta">
+            <span class="signal ok">↑ watching margin expansion</span>
+          </div>
+          <a href="./companies/aapl/">Open research →</a>
+        </article>
+
+        <article class="card" data-name="Microsoft" data-ticker="MSFT" data-sector="Tech" data-tags="cloud,ai,office" data-rating="Watch">
+          <div class="meta">
+            <span class="ticker">MSFT</span>
+            <span class="tag">Tech</span>
+            <span class="tag">Cloud</span>
+          </div>
+          <div>
+            <div><strong>Microsoft</strong></div>
+            <div class="muted">Azure + Copilot monetization; seat expansion</div>
+          </div>
+          <div class="meta">
+            <span class="signal ok">↑ AI attach growing</span>
+          </div>
+          <a href="./companies/msft/">Open research →</a>
+        </article>
+
+        <article class="card" data-name="NVIDIA" data-ticker="NVDA" data-sector="Tech" data-tags="semis,gpu,ai,datacenter" data-rating="Researching">
+          <div class="meta">
+            <span class="ticker">NVDA</span>
+            <span class="tag">Semis</span>
+            <span class="tag">AI</span>
+          </div>
+          <div>
+            <div><strong>NVIDIA</strong></div>
+            <div class="muted">Data center cadence; platform moat (CUDA, NVLink)</div>
+          </div>
+          <div class="meta">
+            <span class="signal warn">⚠ supply/lead time risk</span>
+          </div>
+          <a href="./companies/nvda/">Open research →</a>
+        </article>
+
+        <article class="card" data-name="Amazon" data-ticker="AMZN" data-sector="Consumer" data-tags="retail,ads,cloud" data-rating="Watch">
+          <div class="meta">
+            <span class="ticker">AMZN</span>
+            <span class="tag">Consumer</span>
+            <span class="tag">Cloud</span>
+          </div>
+          <div>
+            <div><strong>Amazon</strong></div>
+            <div class="muted">Retail margin recovery; Ads flywheel; AWS GenAI</div>
+          </div>
+          <a href="./companies/amzn/">Open research →</a>
+        </article>
+
+        <article class="card" data-name="Alphabet" data-ticker="GOOGL" data-sector="Tech" data-tags="ads,search,cloud,ai" data-rating="Researching">
+          <div class="meta">
+            <span class="ticker">GOOGL</span>
+            <span class="tag">Ads</span>
+            <span class="tag">AI</span>
+          </div>
+          <div>
+            <div><strong>Alphabet</strong></div>
+            <div class="muted">Search vs. AI assistants; YouTube RPM</div>
+          </div>
+          <a href="./companies/googl/">Open research →</a>
+        </article>
+
+        <article class="card" data-name="Tesla" data-ticker="TSLA" data-sector="Industrial" data-tags="ev,energy,autonomy" data-rating="Watch">
+          <div class="meta">
+            <span class="ticker">TSLA</span>
+            <span class="tag">Industrial</span>
+            <span class="tag">Auto</span>
+          </div>
+          <div>
+            <div><strong>Tesla</strong></div>
+            <div class="muted">FSD take rate; energy margin mix</div>
+          </div>
+          <a href="./companies/tsla/">Open research →</a>
+        </article>
+      </div>
+      <p class="muted" id="empty" style="display:none; margin:8px 0 0;">No companies match your search/filters.</p>
+    </section>
+
+    <!-- Recent updates / quick links -->
+    <section class="row">
+      <section class="panel">
+        <h2>Recent Updates</h2>
+        <div class="list">
+          <a href="./companies/msft/#2025-10-03">
+            <span>MSFT — Copilot MAU note</span><span class="muted">Oct 3</span>
+          </a>
+          <a href="./companies/nvda/#2025-10-02">
+            <span>NVDA — H200 allocation checks</span><span class="muted">Oct 2</span>
+          </a>
+          <a href="./companies/aapl/#2025-10-01">
+            <span>AAPL — Services growth model v2</span><span class="muted">Oct 1</span>
+          </a>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Shortcuts</h2>
+        <div class="list">
+          <a href="./watchlist/"><span>Open Watchlist</span><span class="muted">WIP</span></a>
+          <a href="./methods/valuation-checklist.html"><span>Valuation Checklist</span><span class="muted">Template</span></a>
+          <a href="./data/"><span>Data Sources</span><span class="muted">Sheets/API</span></a>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <!-- Tiny JS: search + chips -->
+  <script>
+    const q = document.getElementById('search');
+    const grid = document.getElementById('companies');
+    const empty = document.getElementById('empty');
+    const chips = Array.from(document.querySelectorAll('.chip'));
+    const activeFilters = new Set();
+
+    function normalize(s){ return (s||'').toLowerCase().trim(); }
+
+    function matchesFilters(card){
+      if(!activeFilters.size) return true;
+      for(const f of activeFilters){
+        const [key, val] = f.split(':');
+        const data = (card.dataset[key] || '').toLowerCase();
+        if(!data.includes(val.toLowerCase())) return false;
+      }
+      return true;
+    }
+
+    function applyFilters(){
+      const term = normalize(q.value);
+      let visible = 0;
+      for(const card of grid.querySelectorAll('.card')){
+        const hay = [
+          card.dataset.name, card.dataset.ticker, card.dataset.sector, card.dataset.tags, card.dataset.rating
+        ].join(' ').toLowerCase();
+        const show = (!term || hay.includes(term)) && matchesFilters(card);
+        card.style.display = show ? '' : 'none';
+        if(show) visible++;
+      }
+      empty.style.display = visible ? 'none' : '';
+    }
+
+    q.addEventListener('input', applyFilters);
+    window.addEventListener('keydown', (e)=>{ if(e.key === '/' && document.activeElement !== q){ e.preventDefault(); q.focus(); }});
+
+    chips.forEach(chip=>{
+      chip.addEventListener('click', ()=>{
+        const f = chip.dataset.filter;
+        if(chip.dataset.active === 'true'){
+          chip.dataset.active = 'false';
+          activeFilters.delete(f);
+        }else{
+          chip.dataset.active = 'true';
+          activeFilters.add(f);
+        }
+        applyFilters();
+      });
+    });
+
+    // initial
+    applyFilters();
+  </script>
 </body>
 </html>
