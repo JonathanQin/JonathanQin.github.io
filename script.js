@@ -1,7 +1,7 @@
 /* ====================== Config ====================== */
-const DATA_URL = document.body.dataset.src || "data/stocks.jsqon";
+const DATA_URL = document.body.dataset.src || "data/stocks.json";
 
-/* ====================== Lenient JSON(.jsqon) Parser ====================== */
+/* ====================== Lenient JSON(.json) Parser ====================== */
 function parseLenientJSON(text){
   text = text.replace(/^\uFEFF/, "");
   text = text.replace(/\/\*[\s\S]*?\*\//g, "");
@@ -308,7 +308,7 @@ async function loadStocks(){
     if (!res.ok) throw new Error(`Failed to load ${DATA_URL} (${res.status})`);
     const text = await res.text();
     const raw = parseLenientJSON(text);
-    if (!Array.isArray(raw)) throw new Error("stocks.jsqon must contain a top-level array.");
+    if (!Array.isArray(raw)) throw new Error("stocks.json must contain a top-level array.");
     state.stocks = normalizeStocks(raw);
     renderTable();
   } catch (err){
