@@ -3,34 +3,49 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>JQ Equity Research</title>
+  <title>Stock Research Hub</title>
   <link rel="preload" href="style.css" as="style">
   <link rel="stylesheet" href="style.css" />
 </head>
-<body data-page="home">
+<body data-page="home" data-src="data/stocks.jsqon">
   <header class="site-header">
     <div class="container">
-      <h1 class="site-title">📈 JQ Equity Research</h1>
-      <p class="site-subtitle">Quick links to my bottom-up equity research, due diligence notes, and investments</p>
+      <h1 class="site-title">📈 Stock Research Hub</h1>
+      <p class="site-subtitle">Search and filter by Name, Ticker, Industry, or Market Cap</p>
     </div>
   </header>
 
   <main class="container">
     <section class="card">
       <div class="card-header">
-        <h2>Stock Notes</h2>
-        <input id="stock-filter" class="input" type="search" placeholder="Filter by symbol or name…" aria-label="Filter stocks">
+        <h2>Universe</h2>
+        <input id="global-search" class="input" type="search" placeholder="Search all columns…" aria-label="Search table">
       </div>
 
-      <!-- If you prefer static links, keep this UL and remove the data-dynamic attribute -->
-        <ul id="stock-list" class="link-list" data-dynamic="true">
-        <!-- Populated by script.js using the STOCKS array -->
-        <!-- Fallback static items if JS is disabled: -->
-        <ul id="stock-list" data-dynamic="true">
-      </ul>
+      <div class="table-wrap">
+        <table id="stocks-table" class="table" aria-describedby="table-help">
+          <thead>
+            <tr>
+              <th data-col="name" data-sortable="true">Name</th>
+              <th data-col="ticker" data-sortable="true">Ticker</th>
+              <th data-col="industry" data-sortable="true">Industry</th>
+              <th data-col="market_cap" data-sortable="true" class="num">Market Cap</th>
+              <th class="action">Page</th>
+            </tr>
+            <tr class="filters">
+              <th><input class="input input-sm" data-filter="name" placeholder="Filter name"></th>
+              <th><input class="input input-sm" data-filter="ticker" placeholder="Filter ticker"></th>
+              <th><input class="input input-sm" data-filter="industry" placeholder="Filter industry"></th>
+              <th><input class="input input-sm" data-filter="market_cap" placeholder='e.g. >10B, 500M-2B'></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody><!-- rows injected by script.js --></tbody>
+        </table>
+      </div>
 
-      <div class="small muted">
-        Tip: Type in the filter box to quickly find a ticker.
+      <div id="table-help" class="small muted">
+        Tip: Click headers to sort • Market cap filter supports <code>&gt;</code>, <code>&gt;=</code>, <code>&lt;</code>, ranges (e.g. <code>500M-2B</code>) and suffixes K/M/B/T.
       </div>
     </section>
   </main>
