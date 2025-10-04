@@ -81,7 +81,7 @@ body{
 .table-wrap {
   max-height: 70vh;       /* scroll height */
   overflow: auto;
-  border: 1px solid #e5e7eb;
+  /* border: 1px solid #e5e7eb; */
   border-radius: 0.5rem;
 }
 .table{
