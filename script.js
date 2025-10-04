@@ -290,33 +290,67 @@ function wireFilters(){
 })();
 
 /* ====================== Boot (w/ file:// fallbacks) ====================== */
-async function loadStocks(){
-  try{
+
+
+async function loadStocks() {
+  console.group("🧭 loadStocks Debug");
+
+  try {
+    console.log("DATA_URL =", DATA_URL);
+    console.log("window.STOCKS_DATA =", window.STOCKS_DATA);
+    console.log("#stocks-data element =", $("#stocks-data"));
+
+    // ---- Case 1: Global variable ----
     if (Array.isArray(window.STOCKS_DATA)) {
+      console.info("✅ Using window.STOCKS_DATA (array of length %d)", window.STOCKS_DATA.length);
       state.stocks = normalizeStocks(window.STOCKS_DATA);
-      renderTable(); return;
+      renderTable();
+      console.groupEnd();
+      return;
     }
+
+    // ---- Case 2: Inline <script id="stocks-data"> ----
     const inline = $("#stocks-data");
     if (inline && inline.textContent.trim()) {
+      console.info("✅ Using inline JSON from #stocks-data");
+      console.debug("Inline text sample:", inline.textContent.slice(0, 200) + "...");
       const raw = JSON.parse(inline.textContent);
       if (!Array.isArray(raw)) throw new Error("Inline #stocks-data must be a JSON array.");
       state.stocks = normalizeStocks(raw);
-      renderTable(); return;
+      renderTable();
+      console.groupEnd();
+      return;
     }
-    const res = await fetch(DATA_URL, {cache:"no-store"});
+
+    // ---- Case 3: Fetch from DATA_URL ----
+    console.info("🌐 Fetching from", DATA_URL);
+    const res = await fetch(DATA_URL, { cache: "no-store" });
+    console.log("Fetch status:", res.status, res.statusText);
+
     if (!res.ok) throw new Error(`Failed to load ${DATA_URL} (${res.status})`);
+
     const text = await res.text();
+    console.debug("Fetched text preview:", text.slice(0, 200) + "...");
     const raw = parseLenientJSON(text);
+
     if (!Array.isArray(raw)) throw new Error("stocks.json must contain a top-level array.");
+
+    console.info("✅ Loaded %d stock entries", raw.length);
     state.stocks = normalizeStocks(raw);
     renderTable();
-  } catch (err){
-    console.error("Stock load error:", err);
+  } catch (err) {
+    console.error("❌ Stock load error:", err);
+    console.error("Error stack:", err.stack);
     tbody.innerHTML = `<tr><td colspan="8" class="muted">
-      Could not load stocks. Use <code>window.STOCKS_DATA</code> or inline JSON for file:// usage, or serve <code>${DATA_URL}</code> over http(s).
+      Could not load stocks. Use <code>window.STOCKS_DATA</code> or inline JSON for file:// usage, 
+      or serve <code>${DATA_URL}</code> over http(s).<br>
+      <strong>See console for debug details.</strong>
     </td></tr>`;
+  } finally {
+    console.groupEnd();
   }
 }
+
 
 function init(){
   if (document.body.dataset.page === "home"){
