@@ -292,27 +292,49 @@ function wireFilters(){
 /* ====================== Boot (w/ file:// fallbacks) ====================== */
 
 
-async function loadStocks(){
-  try{
+async function loadStocks() {
+  try {
+    console.log("hi1: loadStocks() called");
+    console.log("DATA_URL =", DATA_URL);
+
+    // If data is preloaded via window.STOCKS_DATA
     if (Array.isArray(window.STOCKS_DATA)) {
+      console.log("Using window.STOCKS_DATA:", window.STOCKS_DATA.length, "entries");
       state.stocks = normalizeStocks(window.STOCKS_DATA);
-      renderTable(); return;
+      renderTable();
+      return;
     }
+
+    // If inline data is present in HTML
     const inline = $("#stocks-data");
     if (inline && inline.textContent.trim()) {
+      console.log("Found inline JSON in #stocks-data");
       const raw = JSON.parse(inline.textContent);
       if (!Array.isArray(raw)) throw new Error("Inline #stocks-data must be a JSON array.");
+      console.log("Parsed inline JSON, count =", raw.length);
       state.stocks = normalizeStocks(raw);
-      renderTable(); return;
+      renderTable();
+      return;
     }
-    const res = await fetch(DATA_URL, {cache:"no-store"});
+
+    // Fetch from external file
+    console.log("Fetching from:", DATA_URL);
+    const res = await fetch(DATA_URL, { cache: "no-store" });
+    console.log("Fetch status:", res.status);
+
     if (!res.ok) throw new Error(`Failed to load ${DATA_URL} (${res.status})`);
     const text = await res.text();
+    console.log("Raw text length:", text.length);
+
     const raw = parseLenientJSON(text);
     if (!Array.isArray(raw)) throw new Error("stocks.json must contain a top-level array.");
+    console.log("Parsed stocks count:", raw.length);
+
     state.stocks = normalizeStocks(raw);
+    console.log("Normalized stocks:", state.stocks.slice(0, 3)); // show sample
     renderTable();
-  } catch (err){
+
+  } catch (err) {
     console.error("Stock load error:", err);
     tbody.innerHTML = `<tr><td colspan="8" class="muted">
       Could not load stocks. Use <code>window.STOCKS_DATA</code> or inline JSON for file:// usage, or serve <code>${DATA_URL}</code> over http(s).
