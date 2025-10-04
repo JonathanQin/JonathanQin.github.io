@@ -198,7 +198,7 @@ code{ background:#0d142c; padding:.1rem .3rem; border-radius:6px; border:1px sol
   border: 1px solid transparent;
   border-radius: 12px;
   background: transparent;
-  transition: background .15s ease, border-color .15s ease, transform .15s ease;
+  /* transition: background .15s ease, border-color .15s ease, transform .15s ease; */
 }
 
 .tab-link .tab-ico { width: 1.15rem; text-align: center; opacity: .95; }
