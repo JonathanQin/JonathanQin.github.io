@@ -4,6 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Sector Research • Stock Hub</title>
+  <link rel="preload" href="style.css" as="style">
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body data-page="sectors" data-src="data/stocks.json">
@@ -11,13 +12,24 @@
     <!-- Sidebar -->
     <aside class="sidebar">
       <div class="brand">Stock Hub</div>
-      <nav class="nav">
-        <a href="index.html" class="nav-link">🏠 Landing</a>
-        <a href="stocks.html" class="nav-link">📈 Stock Research</a>
-        <a href="sectors.html" class="nav-link">🏭 Sector Research</a>
-        <a href="portfolio.html" class="nav-link">🧳 My Portfolio</a>
-        <a href="top-picks.html" class="nav-link">⭐ Top Picks</a>
+      <nav class="tabs">
+        <a href="index.html"     class="tab-link" data-tab="landing">
+          <span class="tab-ico">🏠</span><span class="tab-label">Landing</span>
+        </a>
+        <a href="stocks.html"    class="tab-link" data-tab="stocks">
+          <span class="tab-ico">📈</span><span class="tab-label">Stock Research</span>
+        </a>
+        <a href="sectors.html"   class="tab-link" data-tab="sectors">
+          <span class="tab-ico">🏭</span><span class="tab-label">Sector Research</span>
+        </a>
+        <a href="portfolio.html" class="tab-link" data-tab="portfolio">
+          <span class="tab-ico">🧳</span><span class="tab-label">My Portfolio</span>
+        </a>
+        <a href="top-picks.html" class="tab-link" data-tab="top-picks">
+          <span class="tab-ico">⭐</span><span class="tab-label">Top Picks</span>
+        </a>
       </nav>
+
     </aside>
 
     <!-- Main -->
