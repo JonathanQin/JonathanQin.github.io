@@ -173,3 +173,69 @@ code{ background:#0d142c; padding:.1rem .3rem; border-radius:6px; border:1px sol
 .cta-tile:hover{ border-color:var(--brand-2); box-shadow:0 0 0 4px var(--ring); }
 .tile-title{ font-weight:700; }
 .tile-sub{ color:var(--muted); font-size:.95rem; }
+
+/* ===== Vertical Tabs in Sidebar ===== */
+.tabs {
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+  padding: .25rem .25rem 1rem;
+}
+
+.tab-link {
+  --bg: #0d142c;
+  --bg-hover: #111a37;
+  --bg-active: #14224b;
+  --border: var(--border);
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  padding: .65rem .9rem;
+  color: var(--text);
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  transition: background .15s ease, border-color .15s ease, transform .15s ease;
+}
+
+.tab-link .tab-ico { width: 1.15rem; text-align: center; opacity: .95; }
+.tab-link .tab-label { letter-spacing: .2px; }
+
+/* hover */
+.tab-link:hover {
+  background: var(--bg-hover);
+  border-color: var(--border);
+  transform: translateY(-1px);
+}
+
+/* active state */
+.tab-link.active {
+  background: var(--bg-active);
+  border-color: var(--brand-2);
+  box-shadow: 0 0 0 3px var(--ring);
+}
+
+/* active indicator bar */
+.tab-link.active::before {
+  content: "";
+  position: absolute;
+  left: -6px;
+  top: 10px;
+  bottom: 10px;
+  width: 4px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, var(--brand), var(--brand-2));
+}
+
+/* compact on small screens */
+@media (max-width: 900px){
+  .layout { grid-template-columns: 72px 1fr; }
+  .brand { padding-left: .25rem; padding-right: .25rem; text-align: center; }
+  .tabs { gap: .25rem; padding: .25rem; }
+  .tab-link { justify-content: center; padding: .65rem; }
+  .tab-link .tab-label { display: none; } /* icons-only when narrow */
+  .tab-link.active::before { left: 4px; }
+}
+

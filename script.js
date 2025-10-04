@@ -519,21 +519,14 @@ function init(){
   }
 
   // highlight active nav on all pages
-  (function highlightActiveNav(){
-    const map = {
-      "landing":"index.html",
-      "stocks":"stocks.html",
-      "sectors":"sectors.html",
-      "portfolio":"portfolio.html",
-      "top-picks":"top-picks.html"
-    };
-    const target = map[page];
-    if (!target) return;
-    document.querySelectorAll(".nav-link").forEach(a=>{
-      const href = (a.getAttribute("href")||"").split("#")[0];
-      if (href.endsWith(target)) a.classList.add("active");
+
+    (function highlightActiveTab(){
+    const page = document.body.dataset.page || "";
+    document.querySelectorAll(".tab-link").forEach(a=>{
+        const tab = a.getAttribute("data-tab");
+        if (tab === page) a.classList.add("active");
     });
-  })();
+    })();
 }
 document.addEventListener("DOMContentLoaded", init);
 
