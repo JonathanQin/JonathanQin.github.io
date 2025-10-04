@@ -67,7 +67,7 @@ function normalizeStocks(list){
     const name = s.name ?? s.company ?? s.company_name ?? "";
     const ticker = (s.ticker ?? s.symbol ?? "").toUpperCase().trim();
     const industry = s.industry ?? s.sector ?? "";
-    const page = s.page || (ticker ? `${ticker}.html` : "#");
+    const page = s.page || (ticker ? `stocks/{ticker}.html` : "#");
     const capRaw = s.market_cap ?? s.marketcap ?? s["market capitalization"] ?? s.mktcap ?? "";
     const lastRaw = s.last_updated ?? s.updated_at ?? s.as_of ?? s.date ?? "";
     const curRaw  = s.current_price ?? s.price ?? s.last_price ?? s.close ?? "";
