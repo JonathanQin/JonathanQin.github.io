@@ -202,17 +202,23 @@ html.theme-dark footer {
     border-bottom: 1px solid var(--border);
   }
 
-  nav {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-  }
+    nav a {
+    display: block;         /* makes each link full-width in nav */
+    padding: 8px 12px;      /* spacing */
+    text-decoration: none;  /* optional: removes underline */
+    color: #4da3ff;         /* your link color */
+    }
 
-  nav a {
-    white-space: nowrap;
-    padding: 8px 10px;
-    margin: 0;
-  }
+    nav a:hover {
+    background: #222;       /* hover effect */
+    }
+
+    nav a:focus,
+    nav a.active {
+    background: #333;       /* fix the weird pill highlight */
+    border-radius: 4px;     /* keep it square-ish if you want */
+    }
+
 
   main {
     padding: 20px 5vw 40px;
