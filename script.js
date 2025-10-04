@@ -494,6 +494,8 @@ async function loadStocks(){
   }
 }
 
+
+
 function init(){
   const page = document.body.dataset.page;
 
@@ -517,17 +519,13 @@ function init(){
     });
     return;
   }
-
-  // highlight active nav on all pages
-
-    (function highlightActiveTab(){
-    const page = document.body.dataset.page || "";
-    document.querySelectorAll(".tab-link").forEach(a=>{
-        const tab = a.getAttribute("data-tab");
-        if (tab === page) a.classList.add("active");
-    });
-    })();
 }
 document.addEventListener("DOMContentLoaded", init);
 
+(function(){
+    const page = document.body.dataset.page || "";
+    document.querySelectorAll(".tab-link").forEach(a=>{
+    if (a.getAttribute("data-tab") === page) a.classList.add("active");
+    });
+})();
 /* ====================== End of script.js ====================== */
