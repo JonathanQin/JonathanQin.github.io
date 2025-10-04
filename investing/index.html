@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>About Me | Welcome to My Website</title>
+  <title>Investing | Welcome to My Website</title>
 
   <!-- Theme boot (prevents flash before dark mode loads) -->
   <script>
@@ -19,6 +19,78 @@
 
   <!-- Link to shared stylesheet -->
   <link rel="stylesheet" href="../assets/styles.css">
+
+  <!-- Page-scoped styles for the clickable image cards -->
+  <style>
+    .visually-hidden {
+      position: absolute !important;
+      height: 1px; width: 1px;
+      overflow: hidden; clip: rect(1px, 1px, 1px, 1px);
+      white-space: nowrap;
+    }
+
+    .link-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+
+    .link-card {
+      position: relative;
+      display: block;
+      height: 260px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #cfcfcf center / cover no-repeat;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+      transition: transform 160ms ease, box-shadow 160ms ease;
+      outline: none;
+    }
+    .link-card:focus-visible {
+      box-shadow: 0 0 0 3px var(--focus, #7aa2ff), 0 8px 24px rgba(0,0,0,0.18);
+      transform: translateY(-2px);
+    }
+    .link-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.16);
+    }
+
+    /* Dark/light overlay to ensure text contrast over images */
+    .link-card::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0.15) 45%, rgba(0,0,0,0));
+      transition: background 160ms ease;
+    }
+    .theme-dark .link-card::before {
+      background: linear-gradient(to top, rgba(0,0,0,0.60), rgba(0,0,0,0.20) 45%, rgba(0,0,0,0));
+    }
+
+    .link-card__text {
+      position: absolute;
+      left: 16px; right: 16px; bottom: 16px;
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.45);
+    }
+    .link-card__kicker {
+      font-size: 0.8rem; opacity: 0.9; letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .link-card__title {
+      margin: 6px 0 0;
+      font-size: 1.25rem; line-height: 1.2; font-weight: 700;
+    }
+
+    /* Container card from your layout */
+    .card {
+      padding: 1.25rem;
+    }
+
+    @media (min-width: 768px) {
+      .link-card { height: 300px; }
+      .link-card__title { font-size: 1.4rem; }
+      .card { padding: 1.5rem; }
+    }
+  </style>
 </head>
 <body>
   <!-- 🌙 / ☀️ Theme Toggle Button -->
@@ -35,31 +107,71 @@
       <a href="../">Home</a>
     </nav>
   </aside>
+
   <main>
     <div class="card">
-      <h1>Investing</h1>
-      <p class="lead">
-        A brief story of how and why I first started investing. 
-        </p>
-      <hr>
-      <p style="font-size: 0.8em;">I began playing the piano when I was six. My competitive spirit and love for the instrument led me to compete in classical music competitions at a young age, but it was my discipline and patience with practicing that ultimately led to my <a href = "https://usomc-my.sharepoint.com/personal/admin_usomc_usomc_onmicrosoft_com/_layouts/15/stream.aspx?id=%2Fpersonal%2Fadmin%5Fusomc%5Fusomc%5Fonmicrosoft%5Fcom%2FDocuments%2FEvent2014%2F2014%2Fconcerts%2FConcert6%2F06%5FJonathan%5FQin%2Emp4&referrer=StreamWebApp%2EWeb&referrerScenario=AddressBarCopied%2Eview%2E67cb2feb%2D960b%2D4809%2D96e0%2D59fb6de073ad" target="_blank">success</a> in winning them. Between cash-prizes of up to $100 for first place finishes and annual chinese-new-year red-envelope collections from relatives, I quickly ammassed a small fortune of almost a thousand dollars. This was a lot of money for a young child, which my father undoubtedly noticed, because one day he walked in with an unsolicited offer to invest my money in the stock market, guarenteeing that by doing so my money would double in seven years. After showing my skepticism, he sweetened the deal by offering to match my investment dollar-for-dollar, effectively doubling my money immediately. I agreed and happily parted with my hoard of cash.</p>
+      <h1 class="visually-hidden">Investing</h1>
 
-      <p style="font-size: 0.8em;">Over the next seven years, I would occasionally wonder if my father really invested that money and if he did, how it was doing.  By the time I left for college, I had all but forgotten that my father had invested money on my behalf; preoccupied with starting college, I didn't even bother checking my new brokerage account my dad had opened for me. It wasn't until halfway through freshman year when I, on a whim, logged in for the first time. I was surprised to find 120 shares of $PFE up over 300% from its initial investment, as well over 30 quarters of dividends sitting as uninvested cash (in hindsight I had checked exactly during $PFE's COVID peak in late 2021). From that moment on, I was hooked on investing and the capital markets.</p>
+      <section class="link-grid" aria-label="Investing pages">
 
-      <p style="font-size: 0.8em;">Today, as a seasoned investor and now hedge fund analyst out of university, I still often think about "my first" investment. While my father is no professional investor, he demonstrated some key principles of investing: the importance of starting early, the power of compounding, and the value of patience and discipline. In fact, my parents have followed these same principles throughout my entire upbringing; they fueled my curiousity and love for learning at a young age, ensured the compounding of my knowledge and skills by encouraging my long term goals, and always addressed my failures and shortcomings with both patience and discipline. Today, I continue to hold those 120 shares of $PFE not as an investment, but as a symbol of my parents' unwavering dedication to investing in me. They are a daily reminder to be patient, disciplined, and above all else, grateful through the highs and lows of my journey in both investing and in life. I have no plans to ever sell them.</p>
+        <!-- Story / Journey -->
+        <a class="link-card"
+           href="./story/"
+           aria-label="Brief story of how I started investing"
+           style="background-image:url('../assets/img/investing-story.jpg');">
+          <div class="link-card__text">
+            <div class="link-card__kicker">Personal Journey</div>
+            <h2 class="link-card__title">Brief Story of How I Started Investing</h2>
+          </div>
+        </a>
 
-      <h2>Investing Pages</h2>
-      <ul>
-        <li>Investment Philosophy</li>
-        <li>Investment Strategies and Management</li>
-        <li>Research and Due Diligence</li>
-        <li>Portfolio Performance</li>
-      </ul>
+        <!-- Investment Philosophy -->
+        <a class="link-card"
+           href="./philosophy/"
+           aria-label="Investment Philosophy"
+           style="background-image:url('../assets/img/investing-philosophy.jpg');">
+          <div class="link-card__text">
+            <div class="link-card__kicker">Principles</div>
+            <h2 class="link-card__title">Investment Philosophy</h2>
+          </div>
+        </a>
 
-      <h2>Recent research and reports</h2>
-      <p>(Add links or write-ups here.)</p>
+        <!-- Strategies & Management -->
+        <a class="link-card"
+           href="./strategies/"
+           aria-label="Investment Strategies and Management"
+           style="background-image:url('../assets/img/investing-strategies.jpg');">
+          <div class="link-card__text">
+            <div class="link-card__kicker">Process</div>
+            <h2 class="link-card__title">Investment Strategies & Management</h2>
+          </div>
+        </a>
 
-      <footer>© <span id="year"></span></footer>
+        <!-- Research & Due Diligence -->
+        <a class="link-card"
+           href="./research/"
+           aria-label="Research and Due Diligence"
+           style="background-image:url('../assets/img/investing-research.jpg');">
+          <div class="link-card__text">
+            <div class="link-card__kicker">Work</div>
+            <h2 class="link-card__title">Research & Due Diligence</h2>
+          </div>
+        </a>
+
+        <!-- Portfolio Performance -->
+        <a class="link-card"
+           href="./performance/"
+           aria-label="Portfolio Performance"
+           style="background-image:url('../assets/img/investing-performance.jpg');">
+          <div class="link-card__text">
+            <div class="link-card__kicker">Results</div>
+            <h2 class="link-card__title">Portfolio Performance</h2>
+          </div>
+        </a>
+
+      </section>
+
+      <footer style="margin-top:1.25rem;">© <span id="year"></span></footer>
     </div>
   </main>
 

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About Me | Welcome to My Website</title>
+
+  <!-- Theme boot (prevents flash before dark mode loads) -->
+  <script>
+    (function () {
+      try {
+        const saved = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = saved || (prefersDark ? 'dark' : 'light');
+        if (theme === 'dark') document.documentElement.classList.add('theme-dark');
+      } catch (_) {}
+    })();
+  </script>
+
+  <!-- Link to shared stylesheet -->
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <!-- 🌙 / ☀️ Theme Toggle Button -->
+  <button id="theme-toggle" aria-label="Toggle theme">🌙</button>
+
+  <aside>
+    <div class="brand">Welcome to My Website</div>
+    <nav>
+      <a href="../about/">About Me</a>
+      <a class="active" href="../investing/">Investing</a>
+      <a href="../reading/">Reading</a>
+      <a href="../traveling/">Traveling</a>
+      <a href="../data/">Data</a>
+      <a href="../">Home</a>
+    </nav>
+  </aside>
+  <main>
+    <div class="card">
+      <h1>Investing</h1>
+      <p class="lead">
+        A brief story of how and why I first started investing. 
+        </p>
+      <hr>
+      <p style="font-size: 0.85em;">I began playing the piano when I was six. My competitive spirit and love for the instrument led me to compete in classical music competitions at a young age, but it was my discipline and patience with practicing that ultimately led to my <a href = "https://usomc-my.sharepoint.com/personal/admin_usomc_usomc_onmicrosoft_com/_layouts/15/stream.aspx?id=%2Fpersonal%2Fadmin%5Fusomc%5Fusomc%5Fonmicrosoft%5Fcom%2FDocuments%2FEvent2014%2F2014%2Fconcerts%2FConcert6%2F06%5FJonathan%5FQin%2Emp4&referrer=StreamWebApp%2EWeb&referrerScenario=AddressBarCopied%2Eview%2E67cb2feb%2D960b%2D4809%2D96e0%2D59fb6de073ad" target="_blank">success</a> in winning them. Between cash-prizes of up to $100 for first place finishes and annual chinese-new-year red-envelope collections from relatives, I quickly ammassed a small fortune of almost a thousand dollars. This was a lot of money for a young child, which my father undoubtedly noticed, because one day he walked in with an unsolicited offer to invest my money in the stock market, guarenteeing that by doing so my money would double in seven years. After showing my skepticism, he sweetened the deal by offering to match my investment dollar-for-dollar, effectively doubling my money immediately. I agreed and happily parted with my hoard of cash.</p>
+
+      <p style="font-size: 0.85em;">Over the next seven years, I would occasionally wonder if my father really invested that money and if he did, how it was doing.  By the time I left for college, I had all but forgotten that my father had invested money on my behalf; preoccupied with starting college, I didn't even bother checking my new brokerage account my dad had opened for me. It wasn't until halfway through freshman year when I, on a whim, logged in for the first time. I was surprised to find 120 shares of $PFE up over 300% from its initial investment, as well over 30 quarters of dividends sitting as uninvested cash (in hindsight I had checked exactly during $PFE's COVID peak in late 2021). From that moment on, I was hooked on investing and the capital markets.</p>
+
+      <p style="font-size: 0.85em;">Today, as a seasoned investor and now hedge fund analyst out of university, I still often think about "my first" investment. While my father is no professional investor, he demonstrated some key principles of investing: the importance of starting early, the power of compounding, and the value of patience and discipline. In fact, my parents have followed these same principles throughout my entire upbringing; they fueled my curiousity and love for learning at a young age, ensured the compounding of my knowledge and skills by encouraging my long term goals, and always addressed my failures and shortcomings with both patience and discipline. Today, I continue to hold those 120 shares of $PFE not as an investment, but as a symbol of my parents' unwavering dedication to investing in me. They are a daily reminder to be patient, disciplined, and above all else, grateful through the highs and lows of my journey in both investing and in life. I have no plans to ever sell them.</p>
+
+      <h2>Investing Pages</h2>
+      <ul>
+        <li>Investment Philosophy</li>
+        <li>Investment Strategies and Management</li>
+        <li>Research and Due Diligence</li>
+        <li>Portfolio Performance</li>
+      </ul>
+
+      <h2>Recent research and reports</h2>
+      <p>(Add links or write-ups here.)</p>
+
+      <footer>© <span id="year"></span></footer>
+    </div>
+  </main>
+
+  <!-- Set current year -->
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+
+  <!-- Theme toggle logic -->
+  <script>
+    (function () {
+      const btn = document.getElementById('theme-toggle');
+      const root = document.documentElement;
+
+      function updateIcon() {
+        const isDark = root.classList.contains('theme-dark');
+        btn.textContent = isDark ? '☀️' : '🌙';
+        btn.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
+      }
+
+      btn.addEventListener('click', () => {
+        const isDark = root.classList.toggle('theme-dark');
+        try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch (_) {}
+        updateIcon();
+      });
+
+      updateIcon();
+    })();
+  </script>
+</body>
+</html>
