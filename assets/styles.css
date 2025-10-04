@@ -6,6 +6,8 @@
   --accent: #007acc;
   --accent-hover: #005999;
   --border: #e6e6e6;
+  --hover: #f1f7ff;
+  --active: #eaf4ff;
 }
 
 /* ===== Dark theme overrides ===== */
@@ -16,9 +18,11 @@ html.theme-dark {
   --accent: #58a6ff;
   --accent-hover: #1f6feb;
   --border: #30363d;
+  --hover: rgba(255,255,255,0.06);
+  --active: rgba(88,166,255,0.15);
 }
 
-/* ===== Layout (your existing styles, now using variables) ===== */
+/* ===== Layout ===== */
 * { box-sizing: border-box; }
 body {
   margin: 0;
@@ -53,9 +57,8 @@ nav a {
   font-weight: 600;
   border-radius: 10px;
 }
-nav a:hover { background: rgba(0,0,0,0.04); color: var(--accent-hover); }
-html.theme-dark nav a:hover { background: rgba(255,255,255,0.06); }
-.active { background: rgba(88,166,255,0.15); }
+nav a:hover { background: var(--hover); color: var(--accent-hover); }
+.active { background: var(--active); }
 
 /* Main */
 main { padding: 40px 6vw; }
