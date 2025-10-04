@@ -77,75 +77,86 @@ body{
 .small{font-size:.9rem} .muted{color:var(--muted)}
 .site-footer{ margin:2.25rem 0 2.5rem; color:var(--muted); }
 
-/* ---- Table ---- */
+/* ====================== Table Wrapper ====================== */
 .table-wrap {
-  max-height: 70vh;       /* scroll height */
-  overflow: auto;
-  /* border: 1px solid #e5e7eb; */
-  border-radius: 0.5rem;
+  max-height: 75vh;        /* Keep scrollable */
+  overflow-y: auto;
+  overflow-x: auto;
+  border: none;            /* No outer border */
 }
-.table{
-  width:100%; border-collapse:separate; border-spacing:0;
-  border:1px solid var(--border); border-radius:14px; overflow:hidden;
-}
-.table thead th{
-  position:sticky; top:0; z-index:1;
-  background:#101735; color:var(--text); text-align:left; font-weight:700; padding:.75rem .9rem;
-  border-bottom:1px solid var(--border); cursor:default; user-select:none;
-}
-.table thead th[data-sortable="true"]{ cursor:pointer; }
-.table thead .filters th{ background:#0f1730; border-bottom:1px solid var(--border); }
-.table td{
-  padding:.7rem .9rem; border-bottom:1px solid rgba(255,255,255,.06);
-}
-.table tr:hover td{ background:rgba(255,255,255,0.02); }
-.table .num{ text-align:right; }
-.table .action{ width:100px; text-align:center; }
 
-.sort-indicator{ margin-left:.35rem; opacity:.8; font-size:.85em; }
-
-.btn-link{
-  display:inline-flex; align-items:center; justify-content:center;
-  text-decoration:none; background: linear-gradient(180deg, #1a2a5a, #14224b);
-  color:var(--text); padding:.5rem .8rem; border-radius:10px;
-  border:1px solid rgba(255,255,255,.08);
-}
-.btn-link:hover{ border-color:var(--brand-2); box-shadow:0 0 0 4px var(--ring); }
-
-code{ background:#0d142c; padding:.1rem .3rem; border-radius:6px; border:1px solid rgba(255,255,255,.08); }
-
-/* Larger table look */
+/* ====================== Table Core ====================== */
 #stocks-table {
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  font-size: 15.5px;      /* a bit larger */
+  border-collapse: collapse;   /* original clean grid style */
+  font-size: 15.5px;           /* slightly larger font */
+  background-color: #ffffff;   /* white table background */
 }
 
 #stocks-table th,
 #stocks-table td {
-  padding: 12px 14px;     /* roomier cells */
-  border-bottom: 1px solid #f1f5f9;
-  vertical-align: middle;
+  padding: 12px 16px;          /* roomier cells */
+  text-align: left;
+  border-bottom: 1px solid #ddd; /* light gridlines */
 }
 
+/* Header */
 #stocks-table thead th {
+  background-color: #f8f9fa;   /* light gray for header only */
+  color: #222;
   position: sticky;
   top: 0;
-  background: #fff;
   z-index: 2;
-  border-bottom: 2px solid #e5e7eb;
 }
 
+/* Sorting indicators */
+.sort-indicator {
+  margin-left: 6px;
+  font-size: 0.8em;
+  opacity: 0.7;
+}
+
+/* Numeric columns */
+#stocks-table .num {
+  text-align: right;
+}
+
+/* Action column (button link) */
+#stocks-table .action {
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Filter row (inputs below header) */
 #stocks-table thead .filters input {
   width: 100%;
-  padding: 6px 8px;
+  padding: 5px 8px;
   font-size: 14px;
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
   outline: none;
+  background-color: #fff;
 }
 
-#stocks-table .num { text-align: right; }
-#stocks-table .action { white-space: nowrap; }
-.sort-indicator { margin-left: 6px; opacity: 0.7; }
+/* Filter row background same as header */
+#stocks-table thead .filters {
+  background-color: #f8f9fa;
+}
+
+/* Hover effects (optional for clarity) */
+#stocks-table tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
+/* Scrollbar styling (subtle, optional) */
+.table-wrap::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+.table-wrap::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+.table-wrap::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
