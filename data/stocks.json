@@ -1,5 +1,6 @@
 [
-  { "symbol": "AAPL", "name": "Apple", "href": "stocks/AAPL.html", "sector": "Technology" },
-  { "symbol": "MSFT", "name": "Microsoft", "href": "stocks/MSFT.html", "sector": "Technology" },
-  { "symbol": "UAL",  "name": "United Airlines", "href": "stocks/UAL.html", "sector": "Airlines" }
+  { "name": "Apple Inc.",               "ticker": "AAPL",  "industry": "Technology Hardware",  "market_cap": "2.9T", "page": "stocks/AAPL.html" },
+  { "name": "Microsoft Corporation",    "ticker": "MSFT",  "industry": "Systems Software",     "market_cap": "3.1T", "page": "stocks/MSFT.html" },
+  { "name": "Alphabet Inc. Class A",    "ticker": "GOOGL", "industry": "Interactive Media",    "market_cap": "2.0T", "page": "stocks/UAL.html" },
+  { "name": "NVIDIA Corporation",       "ticker": "NVDA",  "industry": "Semiconductors",       "market_cap": "3.0T", "page": "stocks/NVDA.html" }
 ]
