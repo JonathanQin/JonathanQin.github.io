@@ -2,61 +2,47 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Apple (AAPL) Research</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #ffffff;
-      color: #333;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background: #0d6efd;
-      color: white;
-      padding: 1rem 0;
-      text-align: center;
-    }
-    main {
-      padding: 2rem;
-      max-width: 800px;
-      margin: auto;
-    }
-    button {
-      background: #0d6efd;
-      color: white;
-      border: none;
-      padding: 0.6rem 1.2rem;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-bottom: 1rem;
-    }
-    button:hover {
-      background: #0b5ed7;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Stock Research Hub</title>
+  <link rel="preload" href="style.css" as="style">
+  <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-  <header>
-    <h1>Apple Inc. (AAPL)</h1>
+<body data-page="home">
+  <header class="site-header">
+    <div class="container">
+      <h1 class="site-title">📈 Stock Research Hub</h1>
+      <p class="site-subtitle">Quick links to individual stock research pages</p>
+    </div>
   </header>
 
-  <main>
-    <button onclick="window.location.href='index.html'">← Back to Home</button>
+  <main class="container">
+    <section class="card">
+      <div class="card-header">
+        <h2>Stocks</h2>
+        <input id="stock-filter" class="input" type="search" placeholder="Filter by symbol or name…" aria-label="Filter stocks">
+      </div>
 
-    <h2>Overview</h2>
-    <p>Apple Inc. designs, manufactures, and markets smartphones, personal computers, tablets, wearables, and accessories.</p>
+      <!-- If you prefer static links, keep this UL and remove the data-dynamic attribute -->
+      <ul id="stock-list" class="link-list" data-dynamic="true">
+        <!-- Populated by script.js using the STOCKS array -->
+        <!-- Fallback static items if JS is disabled: -->
+        <noscript>
+          <li><a class="btn-link" href="AAPL.html">Apple (AAPL)</a></li>
+        </noscript>
+      </ul>
 
-    <h2>Recent Analysis</h2>
-    <p>Placeholder for your stock research, data visualizations, or reports.</p>
-
-    <h2>Financial Highlights</h2>
-    <ul>
-      <li>Revenue: $383B (FY 2024)</li>
-      <li>Net Income: $99B</li>
-      <li>EPS: $6.12</li>
-    </ul>
+      <div class="small muted">
+        Tip: Type in the filter box to quickly find a ticker.
+      </div>
+    </section>
   </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <span>© <span id="year"></span> Stock Research Hub</span>
+    </div>
+  </footer>
+
+  <script src="script.js" defer></script>
 </body>
 </html>
