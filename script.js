@@ -173,10 +173,9 @@ function renderTable(){
   rows.forEach(r=>{
     const tr = document.createElement("tr");
 
-    const tdName = document.createElement("td"); tdName.textContent = r.name || "—";
+    //const tdName = document.createElement("td"); tdName.textContent = r.name || "—";
     const tdTkr  = document.createElement("td"); tdTkr.textContent  = r.ticker || "—";
     const tdInd  = document.createElement("td"); tdInd.textContent  = r.industry || "—";
-    const tdLU   = document.createElement("td"); tdLU.textContent   = isNaN(r.last_updated_val) ? (r.last_updated_raw || "—") : fmtDate(r.last_updated_val);
     const tdCur  = document.createElement("td"); tdCur.className    = "num"; tdCur.textContent = isNaN(r.current_price_val) ? (r.current_price_raw || "—") : fmtMoney(r.current_price_val);
     const tdTgt  = document.createElement("td"); tdTgt.className    = "num"; tdTgt.textContent = isNaN(r.target_price_val) ? (r.target_price_raw || "—") : fmtMoney(r.target_price_val);
 
@@ -185,13 +184,15 @@ function renderTable(){
     const tdCap  = document.createElement("td"); tdCap.className    = "num";
     tdCap.textContent = isNaN(r.market_cap_val) ? (r.market_cap_raw || "—") :
       (()=>{ const n=r.market_cap_val, u=[[1e12,"T"],[1e9,"B"],[1e6,"M"],[1e3,"K"]]; for(const [v,s] of u){ if(n>=v) return `$${(n/v).toFixed(2).replace(/\.00$/,'')}${s}`;} return `$${n.toLocaleString()}`; })();
+    const tdLU   = document.createElement("td"); tdLU.textContent   = isNaN(r.last_updated_val) ? (r.last_updated_raw || "—") : fmtDate(r.last_updated_val);
 
     const tdAct  = document.createElement("td"); tdAct.className = "action";
     const a = document.createElement("a"); a.className = "btn-link"; a.href = r.page || "#"; a.textContent = "Open";
     a.setAttribute("aria-label", `Open page for ${r.ticker || 'stock'}`);
     tdAct.appendChild(a);
 
-    [tdName, tdTkr, tdInd, tdLU, tdCur, tdTgt, tdRat, tdStr, tdCap, tdAct].forEach(td=>tr.appendChild(td));
+    //[tdName, tdTkr, tdInd, tdLU, tdCur, tdTgt, tdRat, tdStr, tdCap, tdAct].forEach(td=>tr.appendChild(td));
+    [tdTkr, tdInd, tdCur, tdTgt, tdRat, tdStr, tdCap, tdLU, tdAct].forEach(td=>tr.appendChild(td));
     frag.appendChild(tr);
   });
 
