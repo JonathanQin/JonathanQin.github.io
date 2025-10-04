@@ -77,86 +77,97 @@ body{
 .small{font-size:.9rem} .muted{color:var(--muted)}
 .site-footer{ margin:2.25rem 0 2.5rem; color:var(--muted); }
 
-/* ====================== Table Wrapper ====================== */
+/* ====================== Scrollable, Larger Table ====================== */
 .table-wrap {
-  max-height: 75vh;        /* Keep scrollable */
+  max-height: 75vh;     /* keeps scroll */
   overflow-y: auto;
   overflow-x: auto;
-  border: none;            /* No outer border */
+  background: var(--panel);
+  border-radius: 10px;
+  box-shadow: 0 0 0 1px var(--line) inset;
 }
 
-/* ====================== Table Core ====================== */
+/* Table core */
 #stocks-table {
   width: 100%;
-  border-collapse: collapse;   /* original clean grid style */
-  font-size: 15.5px;           /* slightly larger font */
-  background-color: #ffffff;   /* white table background */
+  border-collapse: collapse; /* crisp grid */
+  font-size: 15.5px;         /* larger size */
+  color: var(--text);
+  background: var(--panel);
 }
 
+/* Cells */
 #stocks-table th,
 #stocks-table td {
-  padding: 12px 16px;          /* roomier cells */
-  text-align: left;
-  border-bottom: 1px solid #ddd; /* light gridlines */
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
 }
 
-/* Header */
+/* Sticky header */
 #stocks-table thead th {
-  background-color: #f8f9fa;   /* light gray for header only */
-  color: #222;
   position: sticky;
   top: 0;
   z-index: 2;
+  background: var(--panel-2);
+  color: var(--text);
+  border-bottom: 2px solid var(--line);
 }
 
-/* Sorting indicators */
+/* Filter row */
+#stocks-table thead .filters {
+  background: var(--panel-2);
+}
+#stocks-table thead .filters input {
+  width: 100%;
+  padding: 7px 10px;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 6px;
+  outline: none;
+}
+#stocks-table thead .filters input::placeholder {
+  color: var(--text-dim);
+}
+#stocks-table thead .filters input:focus {
+  border-color: var(--input-focus);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--input-focus) 30%, transparent);
+}
+
+/* Numeric alignment + action col */
+#stocks-table .num { text-align: right; }
+#stocks-table .action { white-space: nowrap; text-align: center; }
+
+/* Hover state */
+#stocks-table tbody tr:hover {
+  background: var(--hover);
+}
+
+/* Sort indicator */
 .sort-indicator {
   margin-left: 6px;
   font-size: 0.8em;
-  opacity: 0.7;
+  color: var(--text-dim);
 }
 
-/* Numeric columns */
-#stocks-table .num {
-  text-align: right;
-}
+/* Inline error row colspan should match your column count (10) */
+#stocks-table td .muted,
+#stocks-table .muted { color: var(--muted); }
 
-/* Action column (button link) */
-#stocks-table .action {
-  text-align: center;
-  white-space: nowrap;
-}
-
-/* Filter row (inputs below header) */
-#stocks-table thead .filters input {
-  width: 100%;
-  padding: 5px 8px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  outline: none;
-  background-color: #fff;
-}
-
-/* Filter row background same as header */
-#stocks-table thead .filters {
-  background-color: #f8f9fa;
-}
-
-/* Hover effects (optional for clarity) */
-#stocks-table tbody tr:hover {
-  background-color: #f5f5f5;
-}
-
-/* Scrollbar styling (subtle, optional) */
+/* Scrollbar styling (dark) */
 .table-wrap::-webkit-scrollbar {
   height: 8px;
   width: 8px;
 }
 .table-wrap::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 4px;
+  background: #233243;
+  border-radius: 6px;
 }
 .table-wrap::-webkit-scrollbar-thumb:hover {
-  background: #aaa;
+  background: #2e4053;
+}
+.table-wrap::-webkit-scrollbar-track {
+  background: var(--panel);
 }
