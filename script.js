@@ -59,7 +59,7 @@ function normalizeStocks(list){
     const ticker = (s.ticker ?? s.symbol ?? "").toUpperCase().trim();
     const industry = s.industry ?? s.sector ?? "";
     // FIX: use ${ticker}, not {ticker}
-    const page = s.page || (ticker ? `stocks/{ticker}.html` : "#");
+    const page = s.page || (ticker ? `stocks/{ticker}/{ticker}.html` : "#");
 
     const capRaw = s.market_cap ?? s.marketcap ?? s["market capitalization"] ?? s.mktcap ?? "";
     const lastRaw = s.last_updated ?? s.updated_at ?? s.as_of ?? s.date ?? "";
