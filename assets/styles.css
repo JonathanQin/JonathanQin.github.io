@@ -73,6 +73,45 @@ nav a:hover {
   color: var(--accent-hover);
 }
 
+/* Position dropdown container */
+.nav-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Hide dropdown list by default */
+.nav-dropdown .dropdown {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 100%;
+  background: var(--background, #fff);
+  padding: 0.5rem 0;
+  margin: 0;
+  list-style: none;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  min-width: 180px;
+  z-index: 1000;
+}
+
+/* Style each subtab link */
+.nav-dropdown .dropdown li a {
+  display: block;
+  padding: 0.5rem 1rem;
+  color: inherit;
+  text-decoration: none;
+}
+.nav-dropdown .dropdown li a:hover {
+  background: rgba(0,0,0,0.05);
+}
+
+/* Show dropdown on hover */
+.nav-dropdown:hover .dropdown {
+  display: block;
+}
+
+
 .active {
   background: var(--active);
 }
