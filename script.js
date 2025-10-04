@@ -18,6 +18,9 @@ function parseLenientJSON(text){
 const $  = (sel,ctx=document)=>ctx.querySelector(sel);
 const $$ = (sel,ctx=document)=>[...ctx.querySelectorAll(sel)];
 const debounce = (fn, ms=200) => { let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); }; };
+// Sector table refs
+const sThead = document.querySelector("#sectors-table thead");
+const sTbody = document.querySelector("#sectors-table tbody");
 
 function parseMoney(x){
   if (x == null || x === "") return NaN;
@@ -220,6 +223,138 @@ function sortRows(rows){
 
 
 /* ====================== Render ====================== */
+// ---- Sector/Industry aggregation ----
+function median(nums){
+  const arr = nums.filter(x=>!isNaN(x)).sort((a,b)=>a-b);
+  if (!arr.length) return NaN;
+  const m = Math.floor(arr.length/2);
+  return arr.length % 2 ? arr[m] : (arr[m-1] + arr[m]) / 2;
+}
+function sum(nums){
+  return nums.filter(x=>!isNaN(x)).reduce((a,b)=>a+b,0);
+}
+function groupByIndustry(rows){
+  const map = new Map();
+  rows.forEach(r=>{
+    const key = (r.industry || "—").trim() || "—";
+    if (!map.has(key)) map.set(key, []);
+    map.get(key).push(r);
+  });
+  return map;
+}
+function buildSectorRows(rows){
+  const g = groupByIndustry(rows);
+  const out = [];
+  for (const [industry, list] of g.entries()){
+    const n = list.length;
+    const covered = list.filter(r => r.last_updated_raw && String(r.last_updated_raw).trim() !== "").length;
+    const coveragePct = n ? (covered / n) * 100 : 0;
+
+    const caps = list.map(r=>r.market_cap_val);
+    const cur  = list.map(r=>r.current_price_val);
+    const tgt  = list.map(r=>r.target_price_val);
+
+    const curMed = median(cur);
+    const tgtMed = median(tgt);
+    const upside = (!isNaN(curMed) && !isNaN(tgtMed) && curMed > 0) ? ((tgtMed - curMed) / curMed) * 100 : NaN;
+
+    out.push({
+      industry,
+      count: n,
+      covered,
+      coverage_pct: coveragePct,
+      mktcap_total: sum(caps),
+      cur_median: curMed,
+      tgt_median: tgtMed,
+      upside_pct: upside
+    });
+  }
+  return out;
+}
+
+// Format helpers for sector table
+function fmtPct(n){
+  if (n == null || isNaN(n)) return "—";
+  return n.toFixed(1).replace(/\.0$/,'') + "%";
+}
+function fmtCapCompact(n){
+  if (n == null || isNaN(n)) return "—";
+  const u = [[1e12,"T"],[1e9,"B"],[1e6,"M"],[1e3,"K"]];
+  for (const [v,s] of u) if (n>=v) return "$" + (n/v).toFixed(2).replace(/\.00$/,'') + s;
+  return "$" + n.toLocaleString();
+}
+
+// Sector sorting
+const sectorSort = { key: "coverage_pct", dir: "desc" };
+function sortSectorRows(rows){
+  const {key, dir} = sectorSort;
+  const mult = dir === "asc" ? 1 : -1;
+  return rows.slice().sort((a,b)=>{
+    const av = a[key], bv = b[key];
+    const an = (typeof av === "number" && !isNaN(av));
+    const bn = (typeof bv === "number" && !isNaN(bv));
+    if (an && bn) return (av - bv) * mult;
+    return String(av||"").localeCompare(String(bv||""), undefined, {sensitivity:"base"}) * mult;
+  });
+}
+
+// Render sector table
+function renderSectors(allRows){
+  if (!sTbody) return; // safe-guard if page not present
+  // read filters
+  const qName = (document.querySelector("#sector-search")?.value || "").trim().toLowerCase();
+  const qMinCov = parseFloat((document.querySelector("#sector-min-coverage")?.value || "").trim());
+  const qMinCnt = parseInt((document.querySelector("#sector-min-count")?.value || "").trim(), 10);
+
+  let rows = buildSectorRows(allRows);
+
+  // apply filters
+  if (qName) rows = rows.filter(r => r.industry.toLowerCase().includes(qName));
+  if (!isNaN(qMinCov)) rows = rows.filter(r => r.coverage_pct >= qMinCov);
+  if (!isNaN(qMinCnt)) rows = rows.filter(r => r.count >= qMinCnt);
+
+  rows = sortSectorRows(rows);
+
+  // render
+  const frag = document.createDocumentFragment();
+  rows.forEach(r=>{
+    const tr = document.createElement("tr");
+
+    const tdInd = document.createElement("td"); tdInd.textContent = r.industry || "—";
+    const tdCnt = document.createElement("td"); tdCnt.className="num"; tdCnt.textContent = r.count.toString();
+    const tdCov = document.createElement("td"); tdCov.className="num"; tdCov.textContent = r.covered.toString();
+    const tdCovP= document.createElement("td"); tdCovP.className="num"; tdCovP.textContent = fmtPct(r.coverage_pct);
+    const tdCap = document.createElement("td"); tdCap.className="num"; tdCap.textContent = fmtCapCompact(r.mktcap_total);
+    const tdCur = document.createElement("td"); tdCur.className="num"; tdCur.textContent = isNaN(r.cur_median) ? "—" : fmtMoney(r.cur_median);
+    const tdTgt = document.createElement("td"); tdTgt.className="num"; tdTgt.textContent = isNaN(r.tgt_median) ? "—" : fmtMoney(r.tgt_median);
+    const tdUps = document.createElement("td"); tdUps.className="num"; tdUps.textContent = fmtPct(r.upside_pct);
+
+    [tdInd, tdCnt, tdCov, tdCovP, tdCap, tdCur, tdTgt, tdUps].forEach(td=>tr.appendChild(td));
+    frag.appendChild(tr);
+  });
+
+  sTbody.innerHTML = "";
+  sTbody.appendChild(frag);
+}
+
+// Wire sector events
+function wireSectorUI(allRows){
+  // header sorting
+  sThead?.querySelectorAll("th[data-sortable='true']").forEach(th=>{
+    th.addEventListener("click", ()=>{
+      const key = th.dataset.col;
+      if (sectorSort.key === key) sectorSort.dir = sectorSort.dir === "asc" ? "desc" : "asc";
+      else { sectorSort.key = key; sectorSort.dir = key === "industry" ? "asc" : "desc"; }
+      renderSectors(allRows);
+    });
+  });
+  // filters
+  ["#sector-search","#sector-min-coverage","#sector-min-count"].forEach(sel=>{
+    document.querySelector(sel)?.addEventListener("input", debounce(()=>renderSectors(allRows), 150));
+  });
+}
+
+
 function renderHeadSortIndicators(){
   $$("th[data-sortable='true']", thead).forEach(th=>{
     th.querySelector(".sort-indicator")?.remove();
@@ -291,6 +426,30 @@ function wireFilters(){
 (function wireBackButtons(){ $$("[data-back]").forEach(btn=>{ btn.addEventListener("click", ()=>{ if (history.length > 1) history.back(); else window.location.href = "index.html"; }); }); })();
 
 /* ====================== Boot (strict JSON for .json) ====================== */
+// Load data only (no rendering). Reuses your DATA_URL + fallbacks.
+async function loadStocksData(){
+  // window.STOCKS_DATA
+  if (Array.isArray(window.STOCKS_DATA)) return normalizeStocks(window.STOCKS_DATA);
+
+  // inline script fallback
+  const inline = document.querySelector("#stocks-data");
+  if (inline && inline.textContent.trim()){
+    const raw = JSON.parse(inline.textContent);
+    if (!Array.isArray(raw)) throw new Error("Inline #stocks-data must be a JSON array.");
+    return normalizeStocks(raw);
+  }
+
+  // fetch
+  const res = await fetch(DATA_URL, {cache:"no-store"});
+  if (!res.ok) throw new Error(`Failed to load ${DATA_URL} (${res.status})`);
+  const text = await res.text();
+  const isJsqon = /\.jsqon$/i.test(DATA_URL);
+  const raw = isJsqon ? parseLenientJSON(text) : JSON.parse(text);
+  if (!Array.isArray(raw)) throw new Error(`${DATA_URL} must contain a top-level array.`);
+  return normalizeStocks(raw);
+}
+
+
 async function loadStocks(){
   try{
     console.group("loadStocks");
@@ -336,10 +495,46 @@ async function loadStocks(){
 }
 
 function init(){
-  if (document.body.dataset.page === "home"){
+  const page = document.body.dataset.page;
+
+  // stocks page (your existing flow)
+  if (page === "stocks" || page === "home") {
     wireSorting();
     wireFilters();
-    loadStocks();
+    loadStocks();  // your existing loader + table renderer
+    return;
   }
+
+  // sectors page (load once, then render & wire)
+  if (page === "sectors") {
+    loadStocksData().then(rows=>{
+      state.stocks = rows;          // keep in state if you want
+      wireSectorUI(rows);
+      renderSectors(rows);
+    }).catch(err=>{
+      console.error("Sector load error:", err);
+      sTbody && (sTbody.innerHTML = `<tr><td colspan="8" class="muted">Failed to load data. See console.</td></tr>`);
+    });
+    return;
+  }
+
+  // highlight active nav on all pages
+  (function highlightActiveNav(){
+    const map = {
+      "landing":"index.html",
+      "stocks":"stocks.html",
+      "sectors":"sectors.html",
+      "portfolio":"portfolio.html",
+      "top-picks":"top-picks.html"
+    };
+    const target = map[page];
+    if (!target) return;
+    document.querySelectorAll(".nav-link").forEach(a=>{
+      const href = (a.getAttribute("href")||"").split("#")[0];
+      if (href.endsWith(target)) a.classList.add("active");
+    });
+  })();
 }
 document.addEventListener("DOMContentLoaded", init);
+
+/* ====================== End of script.js ====================== */

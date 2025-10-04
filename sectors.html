@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Sector Research • Stock Hub</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body data-page="sectors" data-src="data/stocks.json">
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">Stock Hub</div>
+      <nav class="nav">
+        <a href="index.html" class="nav-link">🏠 Landing</a>
+        <a href="stocks.html" class="nav-link">📈 Stock Research</a>
+        <a href="sectors.html" class="nav-link">🏭 Sector Research</a>
+        <a href="portfolio.html" class="nav-link">🧳 My Portfolio</a>
+        <a href="top-picks.html" class="nav-link">⭐ Top Picks</a>
+      </nav>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <header class="site-header">
+        <h1 class="site-title">Sector / Industry Research</h1>
+        <p class="site-subtitle">Group stocks by industry and view coverage, market cap, and median targets.</p>
+      </header>
+
+      <section class="card">
+        <div class="card-header">
+          <div style="display:flex;gap:.75rem;flex-wrap:wrap;width:100%;">
+            <input id="sector-search" class="input" placeholder="Filter industry…"/>
+            <input id="sector-min-coverage" class="input" style="width:180px" placeholder="Min coverage % (e.g., 50)"/>
+            <input id="sector-min-count" class="input" style="width:180px" placeholder="Min companies (e.g., 5)"/>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="table-wrap">
+            <table id="sectors-table" class="table">
+              <thead>
+                <tr>
+                  <th data-col="industry"      data-sortable="true">Industry</th>
+                  <th data-col="count"         data-sortable="true">Companies</th>
+                  <th data-col="covered"       data-sortable="true">With Last Updated</th>
+                  <th data-col="coverage_pct"  data-sortable="true">Coverage %</th>
+                  <th data-col="mktcap_total"  data-sortable="true">Total Mkt Cap</th>
+                  <th data-col="cur_median"    data-sortable="true">Median Current</th>
+                  <th data-col="tgt_median"    data-sortable="true">Median Target</th>
+                  <th data-col="upside_pct"    data-sortable="true">Median Upside %</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <p class="small muted" style="margin-top:.6rem;">
+            Coverage % = rows with non-empty <em>last_updated</em> divided by total in the industry.
+          </p>
+        </div>
+      </section>
+
+      <footer class="site-footer small muted">© <span id="year"></span> • Stock Hub</footer>
+    </main>
+  </div>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
