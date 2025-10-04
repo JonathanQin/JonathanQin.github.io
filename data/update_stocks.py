@@ -19,7 +19,7 @@ class StockDatasetUpdater:
         "last_updated": "2025-10-03",  # MANUAL ONLY (or via set_target_price)
         "current_price": "227.15",
         "target_price": "250",
-        "page": "stocks/AAPL.html"
+        "page": "stocks/AAPL/AAPL.html"
       }
 
     Policy:
@@ -101,7 +101,7 @@ class StockDatasetUpdater:
                 "industry": ex_by_ticker.get(ticker, {}).get("industry", ""),
                 "market_cap": ex_by_ticker.get(ticker, {}).get("market_cap", ""),
                 "current_price": ex_by_ticker.get(ticker, {}).get("current_price", ""),
-                "page": f"stocks/{ticker}.html",
+                "page": f"stocks/{ticker}/{ticker}.html",
             }
 
         prev = ex_by_ticker.get(ticker, {})
@@ -118,7 +118,7 @@ class StockDatasetUpdater:
             "target_price": str(target_price) if target_price is not None else prev.get("target_price", ""),
             "strategy":     str(strategy)     if strategy     is not None else prev.get("strategy", ""),
             "rating":       str(rating)       if rating       is not None else prev.get("rating", ""),
-            "page": f"stocks/{ticker}.html",
+            "page": f"stocks/{ticker}/{ticker}.html",
         }
 
         ex_by_ticker[ticker] = merged
@@ -145,14 +145,14 @@ class StockDatasetUpdater:
                 "last_updated": self._today(),  # set because we're changing target
                 "current_price": "",
                 "target_price": str(target_price),
-                "page": f"stocks/{ticker}.html",
+                "page": f"stocks/{ticker}/{ticker}.html",
             }
         else:
             rec = rec.copy()
             rec["target_price"] = str(target_price)
             rec["last_updated"] = self._today()
 
-        rec["page"] = f"stocks/{ticker}.html"
+        rec["page"] = f"stocks/{ticker}/{ticker}.html"
         by_ticker[ticker] = rec
 
         out = [by_ticker[t] for t in sorted(by_ticker.keys())]
@@ -171,10 +171,10 @@ class StockDatasetUpdater:
         rec = by_ticker.get(ticker, {
             "name": "", "ticker": ticker, "industry": "", "market_cap": "",
             "last_updated": self._today(), "current_price": "", "target_price": "",
-            "strategy": "", "rating": "", "page": f"stocks/{ticker}.html"
+            "strategy": "", "rating": "", "page": f"stocks/{ticker}/{ticker}.html"
         }).copy()
         rec["rating"] = str(rating)
-        rec["page"] = f"stocks/{ticker}.html"
+        rec["page"] = f"stocks/{ticker}/{ticker}.html"
         by_ticker[ticker] = rec
         out = [by_ticker[t] for t in sorted(by_ticker.keys())]
         self._write_json(out)
@@ -198,7 +198,7 @@ class StockDatasetUpdater:
             "market_cap": "",
             "current_price": "",
             "target_price": "",
-            "page": f"stocks/{ticker}.html",
+            "page": f"stocks/{ticker}/{ticker}.html",
         }).copy()
 
         if date == "":
@@ -210,7 +210,7 @@ class StockDatasetUpdater:
                 raise ValueError("date must be YYYY-MM-DD, empty string to clear, or None for today")
             rec["last_updated"] = date
 
-        rec["page"] = f"stocks/{ticker}.html"
+        rec["page"] = f"stocks/{ticker}/{ticker}.html"
         by_ticker[ticker] = rec
 
         out = [by_ticker[t] for t in sorted(by_ticker.keys())]
@@ -235,11 +235,11 @@ class StockDatasetUpdater:
             "last_updated": "",
             "current_price": "",
             "target_price": "",
-            "page": f"stocks/{ticker}.html",
+            "page": f"stocks/{ticker}/{ticker}.html",
         }).copy()
 
         rec["industry"] = industry
-        rec["page"] = f"stocks/{ticker}.html"
+        rec["page"] = f"stocks/{ticker}/{ticker}.html"
         by_ticker[ticker] = rec
 
         out = [by_ticker[t] for t in sorted(by_ticker.keys())]
@@ -261,13 +261,13 @@ class StockDatasetUpdater:
                 "target_price": "" if field != "target_price" else value,
                 "strategy": ""     if field != "strategy"     else value,
                 "rating": "",
-                "page": f"stocks/{ticker}.html",
+                "page": f"stocks/{ticker}/{ticker}.html",
             }
         else:
             rec = rec.copy()
             rec[field] = value
             rec["last_updated"] = self._today()
-            rec["page"] = f"stocks/{ticker}.html"
+            rec["page"] = f"stocks/{ticker}/{ticker}.html"
 
         by_ticker[ticker] = rec
         out = [by_ticker[t] for t in sorted(by_ticker.keys())]
@@ -290,7 +290,7 @@ class StockDatasetUpdater:
                 "target_price": prev.get("target_price", ""),
                 "strategy":     prev.get("strategy", ""),    # NEW
                 "rating":       prev.get("rating", ""),      # NEW
-                "page": f"stocks/{tkr}.html",
+                "page": f"stocks/{tkr}/{tkr}.html",
             }
             updated[tkr] = merged
         return [updated[t] for t in sorted(updated.keys())]
@@ -346,7 +346,7 @@ class StockDatasetUpdater:
                 "last_updated": prev.get("last_updated", ""),  # preserved (manual)
                 "current_price": fresh["current_price"],
                 "target_price": prev.get("target_price", ""),
-                "page": f"stocks/{tkr}.html",
+                "page": f"stocks/{tkr}/{tkr}.html",
             }
             updated[tkr] = merged
 
@@ -381,7 +381,7 @@ class StockDatasetUpdater:
             "industry": industry,
             "market_cap": market_cap_pretty,
             "current_price": current_price,
-            "page": f"stocks/{ticker}.html",
+            "page": f"stocks/{ticker}/{ticker}.html",
         }
 
     # ---------------- File I/O ----------------
