@@ -87,6 +87,7 @@ body{
 .table{
   width:100%; border-collapse:separate; border-spacing:0;
   border:1px solid var(--border); border-radius:14px; overflow:hidden;
+  table-layout: fixed;
 }
 .table thead th{
   position:sticky; top:0; z-index:1;
@@ -95,12 +96,30 @@ body{
 }
 .table thead th[data-sortable="true"]{ cursor:pointer; }
 .table thead .filters th{ background:#0f1730; border-bottom:1px solid var(--border); }
+.table thead .filters .input {
+  width: 100%;
+  box-sizing: border-box;
+}
 .table td{
-  padding:.7rem .9rem; border-bottom:1px solid rgba(255,255,255,.06);
+  padding:.7rem .9rem; 
+  vertical-align: middle;
+  text-align: left;             
+  border-bottom:1px solid rgba(255,255,255,.06);
 }
 .table tr:hover td{ background:rgba(255,255,255,0.02); }
-.table .num{ text-align:right; }
-.table .action{ width:100px; text-align:center; }
+.table .num,
+.table [data-col="current_price"],
+.table [data-col="target_price"],
+.table [data-col="market_cap"] {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;            /* no wraps for numbers */
+}
+.table [data-col="ticker"],
+.table [data-col="last_updated"],
+.table .action {
+  width:100px; text-align:center;white-space: nowrap;
+}
 
 .sort-indicator{ margin-left:.35rem; opacity:.8; font-size:.85em; }
 

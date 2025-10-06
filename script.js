@@ -355,7 +355,7 @@ function renderSectors(allRows){
     a.setAttribute("aria-label", `Open sector page for ${r.industry}`);
     tdPage.appendChild(a);
 
-    [tdInd, tdCnt, tdCov, tdCovP, tdCap, tdCur, tdTgt, tdUps].forEach(td=>tr.appendChild(td));
+    [tdInd, tdCnt, tdCov, tdCovP, tdCap, tdCur, tdTgt, tdUps, tdPage].forEach(td=>tr.appendChild(td));
     frag.appendChild(tr);
   });
 
